@@ -1,0 +1,6 @@
+{
+  "compilerOptions": {
+    "lib": ["deno.ns", "dom", "dom.iterable", "esnext"],
+    "types": ["https://esm.sh/@supabase/functions-js/src/edge-runtime.d.ts"]
+  }
+}
