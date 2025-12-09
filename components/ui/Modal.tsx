@@ -3,7 +3,7 @@
 import * as React from 'react';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { X } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, MotionProps } from 'framer-motion';
 
 import { cn } from '@/lib/utils';
 
@@ -19,7 +19,7 @@ const MotionDialogOverlay = motion(DialogPrimitive.Overlay);
 
 const ModalOverlay = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Overlay>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Overlay>
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Overlay> & MotionProps
 >(({ className, ...props }, ref) => (
   <MotionDialogOverlay
     ref={ref}
@@ -39,7 +39,7 @@ const MotionDialogContent = motion(DialogPrimitive.Content);
 
 const ModalContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> & MotionProps
 >(({ className, children, ...props }, ref) => {
   return (
     <DialogPrimitive.Portal>
