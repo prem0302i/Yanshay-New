@@ -1,9 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -15,17 +14,6 @@ const LoginForm = () => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const { user } = useAuth();
-
-  useEffect(() => {
-    if (user) {
-      if (user.role === 'admin') {
-        router.push('/admin');
-      } else {
-        router.push('/');
-      }
-    }
-  }, [user, router]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,15 +21,30 @@ const LoginForm = () => {
     setLoading(true);
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      const { data: { user }, error } = await supabase.auth.signInWithPassword({ email, password });
 
       if (error) {
         console.error('Login Error:', error.message);
         setError(error.message);
         toast.error(error.message);
-      } else {
-        toast.success('Logged in successfully! Redirecting...');
-        router.refresh();
+      } else if (user) {
+        const { data: profile, error: profileError } = await supabase
+          .from('users')
+          .select('role')
+          .eq('id', user.id)
+          .single();
+
+        if (profileError) {
+          toast.error(profileError.message);
+        } else {
+          toast.success('Logged in successfully!');
+          if (profile.role === 'admin') {
+            router.push('/admin');
+          } else {
+            router.push('/');
+          }
+          router.refresh();
+        }
       }
     } catch (err) {
       console.error('Unexpected error during login:', err);
