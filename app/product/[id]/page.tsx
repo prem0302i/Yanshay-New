@@ -2,6 +2,11 @@ import * as React from 'react';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 
+export async function generateStaticParams() {
+  // In a real app, you would fetch your product IDs from a database or API
+  return [{ id: '1' }, { id: '2' }, { id: '3' }];
+}
+
 const ProductPage = ({ params }: { params: { id: string } }) => {
   const [isLoading, setIsLoading] = React.useState(true);
 
