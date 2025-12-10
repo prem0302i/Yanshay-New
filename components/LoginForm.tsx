@@ -34,8 +34,13 @@ const LoginForm = () => {
           .eq('id', user.id)
           .single();
 
-        if (profileError) {
-          toast.error(profileError.message);
+        if (profileError || !profile) {
+          const errorMessage = profileError ? profileError.message : 'User profile not found.';
+          console.error('Profile fetch error:', errorMessage);
+          setError(errorMessage);
+          toast.error(errorMessage);
+          // Sign out to prevent user being in a broken, half-logged-in state
+          await supabase.auth.signOut();
         } else {
           toast.success('Logged in successfully!');
           if (profile.role === 'admin') {
