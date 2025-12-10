@@ -3,14 +3,69 @@
 import * as React from 'react';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useAuth } from '@/context/AuthContext';
+import { supabase } from '@/lib/supabase';
+import { toast } from 'sonner';
 
-export const ProductPageClient = () => {
+export const ProductPageClient = ({ product }: { product: any }) => {
+  const { user } = useAuth();
   const [isLoading, setIsLoading] = React.useState(true);
 
   React.useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), 2000);
     return () => clearTimeout(timer);
   }, []);
+
+  const handleAddToCart = async () => {
+    if (!user) {
+      toast.error('You must be logged in to add items to your cart.');
+      return;
+    }
+
+    const variantId = product.variants[0].id;
+
+    // Check if the item is already in the cart
+    const { data: existingItem, error: fetchError } = await supabase
+      .from('carts')
+      .select('*')
+      .eq('user_id', user.id)
+      .eq('variant_id', variantId)
+      .single();
+
+    if (fetchError && fetchError.code !== 'PGRST116') { // PGRST116 = no rows found
+      toast.error(fetchError.message);
+      return;
+    }
+
+    if (existingItem) {
+      // Update quantity
+      const { error: updateError } = await supabase
+        .from('carts')
+        .update({ quantity: existingItem.quantity + 1 })
+        .eq('id', existingItem.id);
+
+      if (updateError) {
+        toast.error(updateError.message);
+      } else {
+        toast.success('Cart updated!');
+      }
+    } else {
+      // Insert new item
+      const { error: insertError } = await supabase.from('carts').insert([
+        {
+          user_id: user.id,
+          variant_id: variantId,
+          quantity: 1,
+        },
+      ]);
+
+      if (insertError) {
+        toast.error(insertError.message);
+      } else {
+        toast.success('Added to cart!');
+      }
+    }
+  };
 
   return (
     <div className="container mx-auto py-16">
@@ -47,9 +102,9 @@ export const ProductPageClient = () => {
               </div>
             </div>
             <div>
-              <h1 className="text-4xl font-bold mb-4">Product Name</h1>
-              <p className="text-2xl text-primary mb-4">$29.99</p>
-              <p className="text-muted-foreground mb-8">This is a description of the product. It is a very good product. You should buy it.</p>
+              <h1 className="text-4xl font-bold mb-4">{product.name}</h1>
+              <p className="text-2xl text-primary mb-4">${product.price}</p>
+              <p className="text-muted-foreground mb-8">{product.description}</p>
               <div className="space-y-4">
                 <div>
                   <h3 className="font-bold mb-2">Color</h3>
@@ -69,7 +124,7 @@ export const ProductPageClient = () => {
                   </div>
                 </div>
               </div>
-              <Button size="lg" className="mt-8">Add to Cart</Button>
+              <Button size="lg" className="mt-8" onClick={handleAddToCart}>Add to Cart</Button>
             </div>
           </>
         )}

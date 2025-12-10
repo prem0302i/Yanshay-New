@@ -8,6 +8,7 @@ import { Session, User } from '@supabase/supabase-js';
 // Define the user profile with an optional role
 interface UserProfile extends User {
   role?: string;
+  full_name?: string;
 }
 
 // Define the shape of the Auth context

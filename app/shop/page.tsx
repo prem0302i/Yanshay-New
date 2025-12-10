@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import { getProducts } from '@/services/product.service';
+import { supabase } from '@/lib/supabase';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -16,13 +17,27 @@ const ShopPage = () => {
   const [filters, setFilters] = React.useState({ category: '', minPrice: 0, maxPrice: 1000 });
   const { user } = useAuth();
 
-  const handleAddToCart = async (variantId: number) => {
+  const handleAddToCart = async (productId: number) => {
     if (!user) {
       toast.error('You must be logged in to add items to your cart.');
       return;
     }
+
+    // First, fetch the default variant for the product
+    const { data: variant, error: variantError } = await supabase
+      .from('product_variants')
+      .select('id')
+      .eq('product_id', productId)
+      .limit(1)
+      .single();
+
+    if (variantError || !variant) {
+      toast.error('This product is out of stock.');
+      return;
+    }
+
     try {
-      await addToCart(user.id, variantId, 1);
+      await addToCart(user.id, variant.id, 1);
       toast.success('Item added to cart!');
     } catch (error: any) {
       toast.error(error.message);

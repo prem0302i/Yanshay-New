@@ -42,7 +42,16 @@ const AccountPage = () => {
           </ul>
         </div>
         <div className="col-span-2">
-          <div id="orders">
+          <div id="profile">
+            <h2 className="text-2xl font-bold mb-4">Profile</h2>
+            {user && (
+              <div className="space-y-2">
+                <p><strong>Full Name:</strong> {user.full_name}</p>
+                <p><strong>Email:</strong> {user.email}</p>
+              </div>
+            )}
+          </div>
+          <div id="orders" className="mt-8">
             <h2 className="text-2xl font-bold mb-4">Orders</h2>
             <div className="space-y-4">
               {orders.map((order) => (
