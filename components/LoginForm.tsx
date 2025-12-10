@@ -48,8 +48,12 @@ const LoginForm = () => {
           } else {
             router.push('/');
           }
-          router.refresh();
         }
+      } else {
+        const errorMessage = 'Login failed: User not found.';
+        console.error(errorMessage);
+        setError(errorMessage);
+        toast.error(errorMessage);
       }
     } catch (err) {
       console.error('Unexpected error during login:', err);
