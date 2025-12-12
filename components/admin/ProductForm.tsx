@@ -10,12 +10,12 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, Dialog
 export const ProductForm = React.forwardRef<HTMLDivElement, { product?: any, onSave: (product: any) => void }>(({ product, onSave }, ref) => {
   const [name, setName] = React.useState(product?.name || '');
   const [description, setDescription] = React.useState(product?.description || '');
-  const [imageUrl, setImageUrl] = React.useState(product?.image_url || '');
+  const [imageFile, setImageFile] = React.useState<File | null>(null);
   const [price, setPrice] = React.useState(product?.product_variants?.[0]?.price || 0);
   const [stock, setStock] = React.useState(product?.product_variants?.[0]?.stock || 0);
 
   const handleSubmit = () => {
-    onSave({ ...product, name, description, image_url: imageUrl, price, stock });
+    onSave({ ...product, name, description, imageFile, price, stock });
   };
 
   return (
@@ -33,8 +33,8 @@ export const ProductForm = React.forwardRef<HTMLDivElement, { product?: any, onS
           <Textarea id="description" value={description} onChange={(e) => setDescription(e.target.value)} className="col-span-3" />
         </div>
         <div className="grid grid-cols-4 items-center gap-4">
-          <Label htmlFor="imageUrl" className="text-right">Image URL</Label>
-          <Input id="imageUrl" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} className="col-span-3" />
+          <Label htmlFor="imageFile" className="text-right">Image</Label>
+          <Input id="imageFile" type="file" onChange={(e) => setImageFile(e.target.files ? e.target.files[0] : null)} className="col-span-3" />
         </div>
         <div className="grid grid-cols-4 items-center gap-4">
           <Label htmlFor="price" className="text-right">Price</Label>

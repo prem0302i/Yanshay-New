@@ -1,8 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
+import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -14,7 +15,6 @@ const LoginForm = () => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
@@ -24,10 +24,13 @@ const LoginForm = () => {
       const { data: { user }, error } = await supabase.auth.signInWithPassword({ email, password });
 
       if (error) {
-        console.error('Login Error:', error.message);
-        setError(error.message);
         toast.error(error.message);
-      } else if (user) {
+        setError(error.message);
+        setLoading(false);
+        return;
+      }
+
+      if (user) {
         const { data: profile, error: profileError } = await supabase
           .from('users')
           .select('role')
@@ -35,30 +38,26 @@ const LoginForm = () => {
           .single();
 
         if (profileError || !profile) {
-          const errorMessage = profileError ? profileError.message : 'User profile not found.';
-          console.error('Profile fetch error:', errorMessage);
-          setError(errorMessage);
-          toast.error(errorMessage);
-          // Sign out to prevent user being in a broken, half-logged-in state
-          await supabase.auth.signOut();
+          const msg = 'Failed to get user profile. Please try again.';
+          toast.error(msg);
+          setError(msg);
+          await supabase.auth.signOut(); // Log out the user to be safe
         } else {
-          toast.success('Logged in successfully!');
-          if (profile.role === 'admin') {
-            router.push('/admin');
-          } else {
-            router.push('/');
-          }
+          toast.success('Logged in successfully! Redirecting...');
+          // Use window.location for a more forceful redirect
+          const targetUrl = profile.role === 'admin' ? '/admin' : '/';
+          window.location.href = targetUrl;
+          return; // Stop execution to allow redirect to happen
         }
       } else {
-        const errorMessage = 'Login failed: User not found.';
-        console.error(errorMessage);
-        setError(errorMessage);
-        toast.error(errorMessage);
+        const msg = 'Login failed. Please check your credentials.';
+        toast.error(msg);
+        setError(msg);
       }
     } catch (err) {
-      console.error('Unexpected error during login:', err);
-      setError('An unexpected error occurred.');
-      toast.error('An unexpected error occurred.');
+      const msg = 'An unexpected error occurred during login.';
+      toast.error(msg);
+      setError(msg);
     } finally {
       setLoading(false);
     }

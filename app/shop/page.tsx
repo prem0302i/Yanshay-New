@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { useAuth } from '@/context/AuthContext';
 import { addToCart } from '@/services/cart.service';
 import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
 
 const ShopPage = () => {
   const [products, setProducts] = React.useState<any[]>([]);
@@ -16,10 +17,11 @@ const ShopPage = () => {
   const [error, setError] = React.useState<string | null>(null);
   const [filters, setFilters] = React.useState({ category: '', minPrice: 0, maxPrice: 1000 });
   const { user } = useAuth();
+  const router = useRouter();
 
   const handleAddToCart = async (productId: number) => {
     if (!user) {
-      toast.error('You must be logged in to add items to your cart.');
+      router.push('/login');
       return;
     }
 

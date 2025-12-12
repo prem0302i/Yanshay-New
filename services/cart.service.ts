@@ -17,9 +17,33 @@ export const getCartItems = async (userId: string) => {
 };
 
 export const addToCart = async (userId: string, variantId: number, quantity: number) => {
+  // First, check if the variant exists
+  const { data: variant, error: variantError } = await supabase
+    .from('product_variants')
+    .select('id')
+    .eq('id', variantId)
+    .single();
+
+  if (variantError || !variant) {
+    throw new Error('This product is out of stock.');
+  }
+
   const { data, error } = await supabase
     .from('carts')
     .insert([{ user_id: userId, variant_id: variantId, quantity }]);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data;
+};
+
+export const updateCartItemQuantity = async (cartItemId: number, quantity: number) => {
+  const { data, error } = await supabase
+    .from('carts')
+    .update({ quantity })
+    .eq('id', cartItemId);
 
   if (error) {
     throw new Error(error.message);

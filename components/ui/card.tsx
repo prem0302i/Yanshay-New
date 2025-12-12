@@ -2,13 +2,10 @@ import * as React from 'react';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
 
-interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
-  image?: string;
-  title?: string;
-}
+interface CardProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 const Card = React.forwardRef<HTMLDivElement, CardProps>(
-  ({ className, image, title, ...props }, ref) => (
+  ({ className, ...props }, ref) => (
   <div
     ref={ref}
     className={cn(
@@ -16,15 +13,6 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(
       className
     )}
   >
-    <div className="aspect-square w-full overflow-hidden rounded-md bg-muted">
-      <Image
-        src={image || 'https://placehold.co/400x400'}
-        alt={title || 'Product Image'}
-        width={400}
-        height={400}
-        className="h-full w-full object-cover object-center"
-      />
-    </div>
     {props.children}
   </div>
 ));

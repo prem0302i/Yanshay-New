@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { useAuth } from '@/context/AuthContext';
-import { getCartItems, removeFromCart } from '@/services/cart.service';
+import { getCartItems, removeFromCart, updateCartItemQuantity } from '@/services/cart.service';
 import { Button } from '@/components/ui/button';
 
 const CartPage = () => {
@@ -33,6 +33,14 @@ const CartPage = () => {
     setCartItems(cartItems.filter((item) => item.id !== cartItemId));
   };
 
+  const handleUpdateQuantity = async (cartItemId: number, newQuantity: number) => {
+    if (newQuantity < 1) {
+      return; // Or handle as a remove action
+    }
+    await updateCartItemQuantity(cartItemId, newQuantity);
+    setCartItems(cartItems.map(item => item.id === cartItemId ? { ...item, quantity: newQuantity } : item));
+  };
+
   const subtotal = cartItems.reduce((acc, item) => acc + item.product_variants.price * item.quantity, 0);
   const shipping = 5.00;
   const total = subtotal + shipping;
@@ -48,21 +56,28 @@ const CartPage = () => {
             ) : error ? (
               <p className="text-red-500">{error}</p>
             ) : (
-              cartItems.map((item) => (
-                <div key={item.id} className="flex items-center justify-between border p-4 rounded-lg">
-                  <div className="flex items-center gap-4">
-                    <img src={item.product_variants.products.image_url} alt={item.product_variants.products.name} className="h-24 w-24 object-cover" />
-                    <div>
-                      <h3 className="font-bold">{item.product_variants.products.name}</h3>
-                      <p className="text-muted-foreground">Size: {item.product_variants.size}, Color: {item.product_variants.color}</p>
+              <div className="border rounded-lg">
+                {cartItems.map((item, index) => (
+                  <div key={item.id} className={`flex items-center justify-between p-4 ${index < cartItems.length - 1 ? 'border-b' : ''}`}>
+                    <div className="flex items-center gap-4">
+                      <img src={item.product_variants.products.image_url} alt={item.product_variants.products.name} className="h-24 w-24 object-cover rounded-md" />
+                      <div>
+                        <h3 className="font-bold">{item.product_variants.products.name}</h3>
+                        <p className="text-muted-foreground">Size: {item.product_variants.size}, Color: {item.product_variants.color}</p>
+                        <p className="font-bold mt-2">${item.product_variants.price}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <div className="flex items-center gap-2">
+                        <Button variant="outline" size="icon" onClick={() => handleUpdateQuantity(item.id, item.quantity - 1)}>-</Button>
+                        <span>{item.quantity}</span>
+                        <Button variant="outline" size="icon" onClick={() => handleUpdateQuantity(item.id, item.quantity + 1)}>+</Button>
+                      </div>
+                      <Button variant="outline" size="sm" onClick={() => handleRemove(item.id)}>Remove</Button>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <p className="font-bold">${item.product_variants.price}</p>
-                    <Button variant="outline" size="sm" className="mt-2" onClick={() => handleRemove(item.id)}>Remove</Button>
-                  </div>
-                </div>
-              ))
+                ))}
+              </div>
             )}
           </div>
         </div>

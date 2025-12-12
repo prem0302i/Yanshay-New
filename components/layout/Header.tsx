@@ -14,13 +14,11 @@ const Header = () => {
         <Link href="/" className="text-2xl font-bold text-primary">
           YANSHAY
         </Link>
-        <nav className="hidden md:flex gap-8">
+        <div className="hidden md:flex items-center justify-end gap-8">
           <Link href="/shop" className="hover:text-primary transition-colors">Shop</Link>
           <Link href="/designer" className="hover:text-primary transition-colors">T-Shirt Designer</Link>
           <Link href="/about" className="hover:text-primary transition-colors">About</Link>
           <Link href="/contact" className="hover:text-primary transition-colors">Contact</Link>
-        </nav>
-        <div className="flex items-center gap-4">
           <Link href="/cart" className="hover:text-primary transition-colors">Cart</Link>
           {user ? (
             <>

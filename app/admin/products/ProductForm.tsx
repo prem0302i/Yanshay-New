@@ -20,7 +20,7 @@ const productSchema = z.object({
   id: z.string().optional(),
   name: z.string().min(1, 'Name is required'),
   description: z.string().min(1, 'Description is required'),
-  image_url: z.union([z.string().url('Invalid URL'), z.string().length(0)]).optional().or(z.literal('')),
+  imageFile: z.any().optional(),
   price: z.preprocess((val) => Number(val), z.number().min(0, 'Price must be a positive number')),
   stock: z.preprocess((val) => Number(val), z.number().int().min(0, 'Stock must be a positive integer')),
 });
@@ -46,7 +46,6 @@ export const ProductForm = React.forwardRef<HTMLDivElement, ProductFormProps>(
         id: product?.id || undefined,
         name: product?.name || '',
         description: product?.description || '',
-        image_url: product?.image_url || '',
         price: product?.price || 0,
         stock: product?.stock || 0,
       },
@@ -57,7 +56,6 @@ export const ProductForm = React.forwardRef<HTMLDivElement, ProductFormProps>(
         id: product?.id || undefined,
         name: product?.name || '',
         description: product?.description || '',
-        image_url: product?.image_url || '',
         price: product?.price || 0,
         stock: product?.stock || 0,
       });
@@ -96,6 +94,10 @@ export const ProductForm = React.forwardRef<HTMLDivElement, ProductFormProps>(
             <Label htmlFor="description">Description</Label>
             <Textarea id="description" {...register('description')} />
             {errors.description && <p className="text-red-500 text-sm">{errors.description.message}</p>}
+          </div>
+          <div>
+            <Label htmlFor="imageFile">Image</Label>
+            <Input id="imageFile" type="file" {...register('imageFile')} />
           </div>
           <div>
             <Label htmlFor="price">Price</Label>
