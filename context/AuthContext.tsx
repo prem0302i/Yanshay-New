@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { supabase } from '@/lib/supabase';
 import { Session, User } from '@supabase/supabase-js';
+import { addToCart } from '@/services/cart.service';
 
 // Define the user profile with an optional role
 interface UserProfile extends User {
@@ -68,6 +69,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             .single();
           if (profileError) throw profileError;
           setUser({ ...session.user, ...userProfile });
+
+          const guestCart = JSON.parse(localStorage.getItem('cart') || '[]');
+          if (guestCart.length > 0) {
+            for (const item of guestCart) {
+              await addToCart(session.user.id, item.variant_id, item.quantity);
+            }
+            localStorage.removeItem('cart');
+          }
         } catch (error) {
           console.error('Error fetching profile on auth change:', error);
           setUser(session.user); // Fallback to auth user data
@@ -88,7 +97,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     await supabase.auth.signOut();
     setUser(null);
     setSession(null);
-    router.refresh();
+    window.location.href = '/';
   };
 
   const value = {

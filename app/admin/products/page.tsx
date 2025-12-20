@@ -80,29 +80,31 @@ const AdminProductsPage = () => {
           {isDialogOpen && <ProductForm ref={formRef} product={selectedProduct} onSave={handleSave} />}
         </Dialog>
       </div>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Image</TableHead>
-            <TableHead>Name</TableHead>
-            <TableHead>Price</TableHead>
-            <TableHead className="text-right">Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {products.map((product) => (
-            <TableRow key={product.id}>
-              <TableCell>{product.image_url && <img src={product.image_url} alt={product.name} className="w-16 h-16 object-cover" />}</TableCell>
-              <TableCell>{product.name}</TableCell>
-              <TableCell>${product.price || 'N/A'}</TableCell>
-              <TableCell className="text-right">
-                <Button variant="outline" size="sm" onClick={() => openForm(product)} className="mr-2">Edit</Button>
-                <Button variant="destructive" size="sm" onClick={() => handleDelete(product.id)}>Delete</Button>
-              </TableCell>
+      <div className="overflow-y-auto h-[60vh]">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Image</TableHead>
+              <TableHead>Name</TableHead>
+              <TableHead>Price</TableHead>
+              <TableHead className="text-right">Actions</TableHead>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHeader>
+          <TableBody>
+            {products.map((product) => (
+              <TableRow key={product.id}>
+                <TableCell>{product.image_url && <img src={product.image_url} alt={product.name} className="w-16 h-16 object-cover" />}</TableCell>
+                <TableCell>{product.name}</TableCell>
+                <TableCell>${product.price || 'N/A'}</TableCell>
+                <TableCell className="text-right">
+                  <Button variant="outline" size="sm" onClick={() => openForm(product)} className="mr-2">Edit</Button>
+                  <Button variant="destructive" size="sm" onClick={() => handleDelete(product.id)}>Delete</Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
       <ConfirmationDialog
         open={isConfirmDialogOpen}
         onOpenChange={setIsConfirmDialogOpen}

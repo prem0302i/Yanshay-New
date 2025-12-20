@@ -31,8 +31,8 @@ export const createProduct = async (product: any) => {
 
     if (uploadError) throw uploadError;
 
-    const { data: urlData } = supabase.storage.from('product-images').getPublicUrl(uploadData.path);
-    imageUrl = urlData.publicUrl;
+    const { data } = supabase.storage.from('product-images').getPublicUrl(uploadData.path);
+    imageUrl = data.publicUrl;
   }
 
   // Create the product
@@ -68,18 +68,28 @@ export const updateProduct = async (id: string, updates: any) => {
 
     if (uploadError) throw uploadError;
 
-    const { data: urlData } = supabase.storage.from('product-images').getPublicUrl(uploadData.path);
-    imageUrl = urlData.publicUrl;
+    const { data } = supabase.storage.from('product-images').getPublicUrl(uploadData.path);
+    imageUrl = data.publicUrl;
   }
-  const { data, error } = await supabase
+  const { data: productData, error: productError } = await supabase
     .from('products')
-    .update({ name, description, image_url: imageUrl, price, stock })
+    .update({ name, description, image_url: imageUrl, price })
     .eq('id', id)
     .select()
     .single();
 
-  if (error) throw error;
-  return data;
+  if (productError) throw productError;
+
+  const { data: variantData, error: variantError } = await supabase
+    .from('product_variants')
+    .update({ price, stock_quantity: stock })
+    .eq('product_id', id)
+    .select()
+    .single();
+
+  if (variantError) throw variantError;
+
+  return { ...productData, ...variantData };
 };
 
 export const deleteProduct = async (id: string) => {

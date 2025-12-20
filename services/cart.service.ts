@@ -28,9 +28,38 @@ export const addToCart = async (userId: string, variantId: number, quantity: num
     throw new Error('This product is out of stock.');
   }
 
-  const { data, error } = await supabase
+  const { data: existingItem, error: selectError } = await supabase
     .from('carts')
-    .insert([{ user_id: userId, variant_id: variantId, quantity }]);
+    .select('*')
+    .eq('user_id', userId)
+    .eq('variant_id', variantId)
+    .single();
+
+  if (selectError && selectError.code !== 'PGRST116') {
+    throw new Error(selectError.message);
+  }
+
+  if (existingItem) {
+    const newQuantity = existingItem.quantity + quantity;
+    const { data, error } = await supabase
+      .from('carts')
+      .update({ quantity: newQuantity })
+      .eq('id', existingItem.id);
+
+    if (error) {
+      throw new Error(error.message);
+    }
+    return data;
+  } else {
+    const { data, error } = await supabase
+      .from('carts')
+      .insert([{ user_id: userId, variant_id: variantId, quantity }]);
+
+    if (error) {
+      throw new Error(error.message);
+    }
+    return data;
+  }
 
   if (error) {
     throw new Error(error.message);

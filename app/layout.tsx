@@ -4,7 +4,7 @@ import { Inter } from 'next/font/google';
 import { ThemeProvider } from '@/components/theme-provider';
 import { AuthProvider } from '@/context/AuthContext';
 import Header from '@/components/layout/Header';
-import Footer from '@/components/layout/Footer';
+import ConditionalFooter from '@/components/layout/ConditionalFooter';
 import PageWrapper from '@/components/layout/PageWrapper';
 import { Toaster } from '@/components/ui/sonner';
 import ErrorBoundary from '@/components/ErrorBoundary';
@@ -44,7 +44,7 @@ export default function RootLayout({
                 <PageWrapper>{children}</PageWrapper>
               </ErrorBoundary>
               </main>
-              <Footer />
+              <ConditionalFooter />
               <Toaster />
             </AuthProvider>
           </ThemeProvider>

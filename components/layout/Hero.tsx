@@ -4,8 +4,12 @@ import Lottie from 'lottie-react';
 import { motion } from 'framer-motion';
 import animationData from '@/assets/lottie/hero-animation.json';
 import { Button } from '@/components/ui/button';
+import { useAuth } from '@/context/AuthContext';
+import { useRouter } from 'next/navigation';
 
 const Hero = () => {
+  const { user } = useAuth();
+  const router = useRouter();
   return (
     <section className="container mx-auto flex flex-col md:flex-row items-center justify-between py-16">
       <motion.div
@@ -16,7 +20,7 @@ const Hero = () => {
       >
         <h1 className="text-5xl font-bold mb-4">Design Your Style</h1>
         <p className="text-xl text-muted-foreground mb-8">Create and customize your own t-shirts with our easy-to-use online designer.</p>
-        <Button size="lg">Get Started</Button>
+        <Button size="lg" onClick={() => router.push('/shop')}>Get Started</Button>
       </motion.div>
       <motion.div
         className="md:w-1/2"

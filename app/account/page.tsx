@@ -3,9 +3,10 @@
 import * as React from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { supabase } from '@/lib/supabase';
+import { Button } from '@/components/ui/button';
 
 const AccountPage = () => {
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
   const [orders, setOrders] = React.useState<any[]>([]);
 
   React.useEffect(() => {
@@ -48,6 +49,7 @@ const AccountPage = () => {
               <div className="space-y-2">
                 <p><strong>Full Name:</strong> {user.full_name}</p>
                 <p><strong>Email:</strong> {user.email}</p>
+                <Button onClick={signOut} variant="destructive" className="mt-4">Logout</Button>
               </div>
             )}
           </div>

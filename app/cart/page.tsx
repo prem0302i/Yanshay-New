@@ -4,12 +4,16 @@ import * as React from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { getCartItems, removeFromCart, updateCartItemQuantity } from '@/services/cart.service';
 import { Button } from '@/components/ui/button';
+import { useRouter } from 'next/navigation';
+import LoginPopup from '@/components/LoginPopup';
 
 const CartPage = () => {
   const { user } = useAuth();
+  const router = useRouter();
   const [cartItems, setCartItems] = React.useState<any[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
   const [error, setError] = React.useState<string | null>(null);
+  const [isLoginPopupOpen, setIsLoginPopupOpen] = React.useState(false);
 
   React.useEffect(() => {
     if (user) {
@@ -25,6 +29,10 @@ const CartPage = () => {
       };
 
       fetchCartItems();
+    } else {
+      const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+      setCartItems(cart);
+      setIsLoading(false);
     }
   }, [user]);
 
@@ -41,9 +49,18 @@ const CartPage = () => {
     setCartItems(cartItems.map(item => item.id === cartItemId ? { ...item, quantity: newQuantity } : item));
   };
 
-  const subtotal = cartItems.reduce((acc, item) => acc + item.product_variants.price * item.quantity, 0);
+  const subtotal = cartItems.reduce((acc, item) => {
+    const price = item.product_variants ? item.product_variants.price : item.price;
+    return acc + price * item.quantity;
+  }, 0);
   const shipping = 5.00;
   const total = subtotal + shipping;
+
+  const handleCheckout = () => {
+    if (!user) {
+      setIsLoginPopupOpen(true);
+    }
+  };
 
   return (
     <div className="container mx-auto py-16">
@@ -60,11 +77,11 @@ const CartPage = () => {
                 {cartItems.map((item, index) => (
                   <div key={item.id} className={`flex items-center justify-between p-4 ${index < cartItems.length - 1 ? 'border-b' : ''}`}>
                     <div className="flex items-center gap-4">
-                      <img src={item.product_variants.products.image_url} alt={item.product_variants.products.name} className="h-24 w-24 object-cover rounded-md" />
+                      <img src={item.product_variants ? item.product_variants.products.image_url : item.image_url} alt={item.product_variants ? item.product_variants.products.name : item.name} className="h-24 w-24 object-cover rounded-md" />
                       <div>
-                        <h3 className="font-bold">{item.product_variants.products.name}</h3>
-                        <p className="text-muted-foreground">Size: {item.product_variants.size}, Color: {item.product_variants.color}</p>
-                        <p className="font-bold mt-2">${item.product_variants.price}</p>
+                        <h3 className="font-bold">{item.product_variants ? item.product_variants.products.name : item.name}</h3>
+                        {item.product_variants && <p className="text-muted-foreground">Size: {item.product_variants.size}, Color: {item.product_variants.color}</p>}
+                        <p className="font-bold mt-2">${item.product_variants ? item.product_variants.price : item.price}</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-4">
@@ -96,7 +113,8 @@ const CartPage = () => {
               <p>Total</p>
               <p>${total.toFixed(2)}</p>
             </div>
-            <Button size="lg" className="w-full mt-4">Checkout</Button>
+            <Button size="lg" className="w-full mt-4" onClick={handleCheckout}>Checkout</Button>
+            <LoginPopup open={isLoginPopupOpen} onOpenChange={setIsLoginPopupOpen} />
           </div>
         </div>
       </div>

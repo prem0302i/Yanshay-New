@@ -68,9 +68,14 @@ export const ProductForm = React.forwardRef<HTMLDivElement, ProductFormProps>(
     const onSubmit = async (data: ProductFormData) => {
       setIsSaving(true);
       try {
-        await onSave(data);
+        const productData = { ...data };
+        if (data.imageFile && data.imageFile.length > 0) {
+          productData.imageFile = data.imageFile[0];
+        }
+        await onSave(productData);
       } catch (error) {
         console.error('Failed to save product:', error);
+        // Optionally, show a toast notification to the user
       } finally {
         setIsSaving(false);
       }

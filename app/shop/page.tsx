@@ -19,19 +19,35 @@ const ShopPage = () => {
   const { user } = useAuth();
   const router = useRouter();
 
-  const handleAddToCart = async (productId: number) => {
-    if (!user) {
-      router.push('/login');
-      return;
-    }
-
+  const handleAddToCart = async (product: any) => {
     // First, fetch the default variant for the product
     const { data: variant, error: variantError } = await supabase
       .from('product_variants')
       .select('id')
-      .eq('product_id', productId)
+      .eq('product_id', product.id)
       .limit(1)
       .single();
+
+    if (variantError || !variant) {
+      toast.error('This product is out of stock.');
+      return;
+    }
+
+    if (!user) {
+      const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+      const existingProduct = cart.find((item: any) => item.variant_id === variant.id);
+
+      if (existingProduct) {
+        existingProduct.quantity += 1;
+      } else {
+        cart.push({ ...product, variant_id: variant.id, quantity: 1 });
+      }
+
+      localStorage.setItem('cart', JSON.stringify(cart));
+      toast.success('Item added to cart!');
+      return;
+    }
+
 
     if (variantError || !variant) {
       toast.error('This product is out of stock.');
@@ -71,7 +87,7 @@ const ShopPage = () => {
         </div>
         <div className="col-span-3">
           {error && <p className="text-red-500">{error}</p>}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {isLoading
               ? [...Array(9)].map((_, i) => (
                   <div key={i} className="space-y-2">
@@ -88,7 +104,7 @@ const ShopPage = () => {
                       <p className="text-muted-foreground">${product.price || 'N/A'}</p>
                       <Button
                         className="mt-4 w-full"
-                        onClick={() => handleAddToCart(product.id)}
+                        onClick={() => handleAddToCart(product)}
                       >
                         Add to Cart
                       </Button>
