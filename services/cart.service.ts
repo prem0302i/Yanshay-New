@@ -60,12 +60,6 @@ export const addToCart = async (userId: string, variantId: number, quantity: num
     }
     return data;
   }
-
-  if (error) {
-    throw new Error(error.message);
-  }
-
-  return data;
 };
 
 export const updateCartItemQuantity = async (cartItemId: number, quantity: number) => {
