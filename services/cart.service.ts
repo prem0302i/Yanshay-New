@@ -28,6 +28,7 @@ export const addToCart = async (userId: string, variantId: number, quantity: num
     throw new Error('This product is out of stock.');
   }
 
+  // Check if the item is already in the cart
   const { data: existingItem, error: selectError } = await supabase
     .from('carts')
     .select('*')
@@ -35,11 +36,13 @@ export const addToCart = async (userId: string, variantId: number, quantity: num
     .eq('variant_id', variantId)
     .single();
 
+  // Handle errors, but ignore 'PGRST116' which means no rows were found
   if (selectError && selectError.code !== 'PGRST116') {
     throw new Error(selectError.message);
   }
 
   if (existingItem) {
+    // If item exists, update the quantity
     const newQuantity = existingItem.quantity + quantity;
     const { data, error } = await supabase
       .from('carts')
@@ -51,6 +54,7 @@ export const addToCart = async (userId: string, variantId: number, quantity: num
     }
     return data;
   } else {
+    // If item doesn't exist, insert a new row
     const { data, error } = await supabase
       .from('carts')
       .insert([{ user_id: userId, variant_id: variantId, quantity }]);
