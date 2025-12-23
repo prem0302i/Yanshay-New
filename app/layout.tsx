@@ -8,7 +8,6 @@ import ConditionalFooter from '@/components/layout/ConditionalFooter';
 import PageWrapper from '@/components/layout/PageWrapper';
 import { Toaster } from '@/components/ui/sonner';
 import ErrorBoundary from '@/components/ErrorBoundary';
-import ClientOnly from '@/components/ClientOnly';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -30,25 +29,23 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head></head>
       <body className={`${inter.className} bg-background text-foreground`}>
-        <ClientOnly>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <AuthProvider>
-              <Header />
-              <main>
-                <ErrorBoundary>
-                <PageWrapper>{children}</PageWrapper>
-              </ErrorBoundary>
-              </main>
-              <ConditionalFooter />
-              <Toaster />
-            </AuthProvider>
-          </ThemeProvider>
-        </ClientOnly>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <AuthProvider>
+            <Header />
+            <main>
+              <ErrorBoundary>
+              <PageWrapper>{children}</PageWrapper>
+            </ErrorBoundary>
+            </main>
+            <ConditionalFooter />
+            <Toaster />
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
