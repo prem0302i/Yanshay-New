@@ -1,6 +1,8 @@
 'use client';
 
-import Lottie from 'lottie-react';
+import dynamic from 'next/dynamic';
+
+const Lottie = dynamic(() => import('lottie-react'), { ssr: false });
 import { motion } from 'framer-motion';
 import animationData from '@/assets/lottie/hero-animation.json';
 import { Button } from '@/components/ui/button';
