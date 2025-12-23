@@ -5,12 +5,15 @@ import { getProducts } from '@/services/product.service';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Card, CardContent } from '@/components/ui/card';
 import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { Filter } from 'lucide-react';
 
 const ShopPage = () => {
   const [products, setProducts] = React.useState<any[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
   const [error, setError] = React.useState<string | null>(null);
   const [filters, setFilters] = React.useState({ category: '', minPrice: 0, maxPrice: 1000 });
+  const [isFilterOpen, setIsFilterOpen] = React.useState(false);
 
   React.useEffect(() => {
     const fetchProducts = async () => {
@@ -31,13 +34,30 @@ const ShopPage = () => {
     <div className="container mx-auto py-16">
       <h1 className="text-4xl font-bold text-center mb-8">Shop</h1>
       <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-        <div className="col-span-1">
+        {/* Filters Sidebar (Desktop) */}
+        <aside className="hidden md:block col-span-1">
           <h2 className="text-2xl font-bold mb-4">Filters</h2>
           {/* ... filter controls ... */}
+        </aside>
+
+        {/* Mobile Filter Button and Panel */}
+        <div className="md:hidden col-span-1">
+          <Button variant="outline" className="w-full flex items-center justify-center gap-2" onClick={() => setIsFilterOpen(!isFilterOpen)}>
+            <Filter size={16} />
+            <span>Filters</span>
+          </Button>
+          {isFilterOpen && (
+            <div className="mt-4">
+              <h2 className="text-2xl font-bold mb-4">Filters</h2>
+              {/* ... filter controls ... */}
+            </div>
+          )}
         </div>
-        <div className="col-span-3">
+
+        {/* Products Grid */}
+        <div className="col-span-1 md:col-span-3">
           {error && <p className="text-red-500">{error}</p>}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             {isLoading
               ? [...Array(9)].map((_, i) => (
                   <div key={i} className="space-y-2">

@@ -4,7 +4,7 @@ const Footer = () => {
   return (
     <footer className="bg-background border-t">
       <div className="container mx-auto p-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 text-center sm:text-left">
           <div>
             <h3 className="text-lg font-bold mb-4">YANSHAY</h3>
             <p className="text-muted-foreground">Modern clothing and custom t-shirt printing.</p>

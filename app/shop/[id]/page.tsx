@@ -92,7 +92,7 @@ const ProductDetailPage = ({ params }: { params: { id: string } }) => {
           {product.image_url && <img src={product.image_url} alt={product.name} className="w-full object-cover rounded-lg" />}
         </div>
         <div>
-          <h1 className="text-4xl font-bold mb-4">{product.name}</h1>
+          <h1 className="text-3xl md:text-4xl font-bold mb-4">{product.name}</h1>
           <p className="text-muted-foreground mb-4">{product.description}</p>
           <p className="text-2xl font-bold mb-4">₹{selectedVariant?.price || 'N/A'}</p>
           

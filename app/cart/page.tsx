@@ -107,7 +107,7 @@ const CartPage = () => {
             ) : (
               <div className="border rounded-lg">
                 {cartItems.map((item, index) => (
-                  <div key={item.variant_id || item.id} className={`flex items-center justify-between p-4 ${index < cartItems.length - 1 ? 'border-b' : ''}`}>
+                  <div key={item.variant_id || item.id} className={`flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 ${index < cartItems.length - 1 ? 'border-b' : ''}`}>
                     <div className="flex items-center gap-4">
                       <img src={item.product_variants ? item.product_variants.products.image_url : item.image_url} alt={item.product_variants ? item.product_variants.products.name : item.name} className="h-24 w-24 object-cover rounded-md" />
                       <div>
@@ -116,7 +116,7 @@ const CartPage = () => {
                         <p className="font-bold mt-2">₹{item.product_variants ? item.product_variants.price : item.price}</p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-4 self-end sm:self-center">
                       <div className="flex items-center gap-2">
                         <Button variant="outline" size="icon" onClick={() => handleUpdateQuantity(item.variant_id, item.quantity - 1)}>-</Button>
                         <span>{item.quantity}</span>

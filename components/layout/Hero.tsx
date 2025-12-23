@@ -18,7 +18,7 @@ const Hero = () => {
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.8 }}
       >
-        <h1 className="text-5xl font-bold mb-4">Design Your Style</h1>
+        <h1 className="text-4xl md:text-5xl font-bold mb-4">Design Your Style</h1>
         <p className="text-xl text-muted-foreground mb-8">Create and customize your own t-shirts with our easy-to-use online designer.</p>
         <Button size="lg" onClick={() => router.push('/shop')}>Get Started</Button>
       </motion.div>

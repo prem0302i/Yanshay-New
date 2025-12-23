@@ -1,13 +1,16 @@
 'use client';
 
+import * as React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useAuth } from '@/context/AuthContext';
 import ThemeToggle from '@/components/ui/ThemeToggle';
 import { Button } from '@/components/ui/button';
+import { Menu, X } from 'lucide-react';
 
 const Header = () => {
   const { user, signOut } = useAuth();
+  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
   return (
     <header className="bg-background border-b">
@@ -23,6 +26,7 @@ const Header = () => {
             </Link>
           )}
         </div>
+        {/* Desktop Menu */}
         <div className="hidden md:flex items-center gap-6">
           <nav className="flex items-center gap-6">
             {user?.role !== 'admin' && (
@@ -52,6 +56,46 @@ const Header = () => {
             <ThemeToggle />
           </div>
         </div>
+
+        {/* Mobile Menu Button */}
+        <div className="md:hidden flex items-center">
+          <ThemeToggle />
+          <Button variant="ghost" size="icon" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+            {isMenuOpen ? <X /> : <Menu />}
+          </Button>
+        </div>
+
+        {/* Mobile Menu */}
+        {isMenuOpen && (
+          <div className="absolute top-16 left-0 w-full bg-background border-b md:hidden flex flex-col items-center gap-4 p-4">
+            <nav className="flex flex-col items-center gap-4">
+              {user?.role !== 'admin' && (
+                <>
+                  <Link href="/shop" className="hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>Shop</Link>
+                  <Link href="/contact" className="hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>Contact</Link>
+                  <Link href="/cart" className="hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>Cart</Link>
+                  <Link href="/about" className="hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>About</Link>
+                </>
+              )}
+            </nav>
+            <div className="flex flex-col items-center gap-4">
+              {user ? (
+                <>
+                  {user.role !== 'admin' ? (
+                    <Link href="/account" className="hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>Account</Link>
+                  ) : (
+                    <Button onClick={() => { signOut(); setIsMenuOpen(false); }} variant="destructive">Logout</Button>
+                  )}
+                </>
+              ) : (
+                <>
+                  <Link href="/login" className="hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>Login</Link>
+                  <Link href="/signup" className="hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>Sign Up</Link>
+                </>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </header>
   );

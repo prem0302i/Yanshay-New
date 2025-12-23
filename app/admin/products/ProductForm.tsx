@@ -126,7 +126,7 @@ export const ProductForm = React.forwardRef<HTMLDivElement, ProductFormProps>(
             <Label>Sizes / Variants</Label>
             <div className="max-h-48 overflow-y-auto pr-2">
               {fields.map((field, index) => (
-                <div key={field.id} className="flex items-center gap-2 mb-2 p-2 border rounded-md">
+                <div key={field.id} className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 mb-2 p-2 border rounded-md">
                   <div className="flex-1">
                     <Label htmlFor={`variants.${index}.size`} className="sr-only">Size</Label>
                     <Input placeholder="Size (e.g., M)" {...register(`variants.${index}.size`)} />
