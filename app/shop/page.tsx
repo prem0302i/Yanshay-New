@@ -33,33 +33,27 @@ const ShopPage = () => {
   return (
     <div className="container mx-auto py-16">
       <h1 className="text-4xl font-bold text-center mb-8">Shop</h1>
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-        {/* Filters Sidebar (Desktop) */}
-        <aside className="hidden md:block col-span-1">
-          <h2 className="text-2xl font-bold mb-4">Filters</h2>
-          {/* ... filter controls ... */}
+      <div className="flex flex-col md:flex-row gap-8">
+        {/* Filters Section */}
+        <aside className="w-full md:w-1/4 lg:w-1/5">
+          <div className="md:hidden mb-4">
+            <Button variant="outline" className="w-full flex items-center justify-center gap-2" onClick={() => setIsFilterOpen(!isFilterOpen)}>
+              <Filter size={16} />
+              <span>{isFilterOpen ? 'Hide' : 'Show'} Filters</span>
+            </Button>
+          </div>
+          <div className={`${isFilterOpen ? 'block' : 'hidden'} md:block`}>
+            <h2 className="text-2xl font-bold mb-4">Filters</h2>
+            {/* ... filter controls ... */}
+          </div>
         </aside>
 
-        {/* Mobile Filter Button and Panel */}
-        <div className="md:hidden col-span-1">
-          <Button variant="outline" className="w-full flex items-center justify-center gap-2" onClick={() => setIsFilterOpen(!isFilterOpen)}>
-            <Filter size={16} />
-            <span>Filters</span>
-          </Button>
-          {isFilterOpen && (
-            <div className="mt-4">
-              <h2 className="text-2xl font-bold mb-4">Filters</h2>
-              {/* ... filter controls ... */}
-            </div>
-          )}
-        </div>
-
         {/* Products Grid */}
-        <div className="col-span-1 md:col-span-3">
+        <main className="w-full md:w-3/4 lg:w-4/5">
           {error && <p className="text-red-500">{error}</p>}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             {isLoading
-              ? [...Array(9)].map((_, i) => (
+              ? [...Array(8)].map((_, i) => (
                   <div key={i} className="space-y-2">
                     <Skeleton className="h-48 w-full" />
                     <Skeleton className="h-6 w-3/4" />
@@ -68,17 +62,18 @@ const ShopPage = () => {
                 ))
               : products.map((product) => (
                   <Link href={`/shop/${product.id}`} key={product.id}>
-                    <Card className="hover:shadow-lg transition-shadow">
-                      <CardContent className="p-4">
-                        {product.image_url && <img src={product.image_url} alt={product.name} className="h-48 w-full object-cover mb-4" />}
-                        <h3 className="font-bold">{product.name}</h3>
-                        {/* Price display can be updated here later based on variants */}
+                    <Card className="hover:shadow-lg transition-shadow h-full">
+                      <CardContent className="p-4 flex flex-col h-full">
+                        <div className="aspect-square w-full overflow-hidden mb-4">
+                          {product.image_url && <img src={product.image_url} alt={product.name} className="h-full w-full object-cover" />}
+                        </div>
+                        <h3 className="font-bold mt-auto">{product.name}</h3>
                       </CardContent>
                     </Card>
                   </Link>
                 ))}
           </div>
-        </div>
+        </main>
       </div>
     </div>
   );
