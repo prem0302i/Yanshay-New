@@ -3,7 +3,6 @@ const nextConfig = {
   experimental: {
     serverComponentsExternalPackages: ['konva'],
   },
-  output: 'export',
   eslint: {
     ignoreDuringBuilds: true,
   },

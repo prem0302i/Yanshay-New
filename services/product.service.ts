@@ -1,14 +1,19 @@
 import { supabase } from '@/lib/supabase';
 
 export const getProducts = async (filters: { minPrice?: number | null; maxPrice?: number | null }) => {
-  let query = supabase.from('products').select('*');
+  let query = supabase.from('products').select(`
+    *,
+    variants:product_variants (*)
+  `);
 
+  // Note: Filtering by price will need to be adjusted to consider variants.
+  // This is a placeholder for now.
   if (filters.minPrice) {
-    query = query.gte('price', filters.minPrice);
+    // query = query.gte('price', filters.minPrice);
   }
 
   if (filters.maxPrice) {
-    query = query.lte('price', filters.maxPrice);
+    // query = query.lte('price', filters.maxPrice);
   }
 
   const { data, error } = await query;
@@ -21,7 +26,7 @@ export const getProducts = async (filters: { minPrice?: number | null; maxPrice?
 };
 
 export const createProduct = async (product: any) => {
-  const { name, description, imageFile, price, stock } = product;
+  const { name, description, imageFile, variants } = product;
   let imageUrl = '';
 
   if (imageFile) {
@@ -38,19 +43,22 @@ export const createProduct = async (product: any) => {
   // Create the product
   const { data: newProduct, error: productError } = await supabase
     .from('products')
-    .insert({ name, description, image_url: imageUrl, price })
+    .insert({ name, description, image_url: imageUrl })
     .select()
     .single();
 
   if (productError) throw productError;
 
-  // Create a default variant for the product
-  const { error: variantError } = await supabase.from('product_variants').insert({
+  // Create variants
+  const variantsToInsert = variants.map((variant: any) => ({
     product_id: newProduct.id,
-    sku: `${name.toUpperCase().replace(/\s/g, '-')}-DEFAULT`,
-    price,
-    stock_quantity: stock,
-  });
+    size: variant.size,
+    price: variant.price,
+    stock_quantity: variant.stock_quantity,
+    sku: `${name.toUpperCase().replace(/\s/g, '-')}-${newProduct.id}-${variant.size}`,
+  }));
+
+  const { error: variantError } = await supabase.from('product_variants').insert(variantsToInsert);
 
   if (variantError) throw variantError;
 
@@ -58,7 +66,7 @@ export const createProduct = async (product: any) => {
 };
 
 export const updateProduct = async (id: string, updates: any) => {
-  const { name, description, imageFile, price, stock } = updates;
+  const { name, description, imageFile, variants } = updates;
   let imageUrl = updates.image_url;
 
   if (imageFile) {
@@ -71,25 +79,34 @@ export const updateProduct = async (id: string, updates: any) => {
     const { data } = supabase.storage.from('product-images').getPublicUrl(uploadData.path);
     imageUrl = data.publicUrl;
   }
+
+  // Update product details
   const { data: productData, error: productError } = await supabase
     .from('products')
-    .update({ name, description, image_url: imageUrl, price })
+    .update({ name, description, image_url: imageUrl })
     .eq('id', id)
     .select()
     .single();
 
   if (productError) throw productError;
 
-  const { data: variantData, error: variantError } = await supabase
-    .from('product_variants')
-    .update({ price, stock_quantity: stock })
-    .eq('product_id', id)
-    .select()
-    .single();
+  // Delete existing variants
+  const { error: deleteError } = await supabase.from('product_variants').delete().eq('product_id', id);
+  if (deleteError) throw deleteError;
 
-  if (variantError) throw variantError;
+  // Insert new variants
+  const variantsToInsert = variants.map((variant: any) => ({
+    product_id: id,
+    size: variant.size,
+    price: variant.price,
+    stock_quantity: variant.stock_quantity,
+    sku: `${name.toUpperCase().replace(/\s/g, '-')}-${id}-${variant.size}`,
+  }));
 
-  return { ...productData, ...variantData };
+  const { error: insertError } = await supabase.from('product_variants').insert(variantsToInsert);
+  if (insertError) throw insertError;
+
+  return productData;
 };
 
 export const deleteProduct = async (id: string) => {

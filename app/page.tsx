@@ -12,22 +12,22 @@ const HomePage = () => {
             <div className="border rounded-lg p-4 text-center">
               <div className="bg-muted h-48 mb-4"></div>
               <h3 className="font-bold">Product Name</h3>
-              <p className="text-muted-foreground">$29.99</p>
+              <p className="text-muted-foreground">₹29.99</p>
             </div>
             <div className="border rounded-lg p-4 text-center">
               <div className="bg-muted h-48 mb-4"></div>
               <h3 className="font-bold">Product Name</h3>
-              <p className="text-muted-foreground">$29.99</p>
+              <p className="text-muted-foreground">₹29.99</p>
             </div>
             <div className="border rounded-lg p-4 text-center">
               <div className="bg-muted h-48 mb-4"></div>
               <h3 className="font-bold">Product Name</h3>
-              <p className="text-muted-foreground">$29.99</p>
+              <p className="text-muted-foreground">₹29.99</p>
             </div>
             <div className="border rounded-lg p-4 text-center">
               <div className="bg-muted h-48 mb-4"></div>
               <h3 className="font-bold">Product Name</h3>
-              <p className="text-muted-foreground">$29.99</p>
+              <p className="text-muted-foreground">₹29.99</p>
             </div>
           </div>
         </section>

@@ -59,7 +59,7 @@ const AccountPage = () => {
               {orders.map((order) => (
                 <div key={order.id} className="border rounded-lg p-4">
                   <p>Order ID: {order.id}</p>
-                  <p>Total: ${order.total_amount}</p>
+                  <p>Total: ₹{order.total_amount}</p>
                   <p>Status: {order.status}</p>
                 </div>
               ))}

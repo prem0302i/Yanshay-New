@@ -3,45 +3,65 @@
 import * as React from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { getCartItems } from '@/services/cart.service';
+import { getAddresses, addAddress } from '@/services/address.service';
 import { createOrder } from '@/services/order.service';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import Script from 'next/script';
-import { supabase } from '@/lib/supabase';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { useRouter } from 'next/navigation';
 
 const CheckoutPage = () => {
   const { user } = useAuth();
+  const router = useRouter();
   const [cartItems, setCartItems] = React.useState<any[]>([]);
-  const [shippingAddress, setShippingAddress] = React.useState({ firstName: '', lastName: '', address: '', city: '', state: '', zip: '' });
+  const [addresses, setAddresses] = React.useState<any[]>([]);
+  const [selectedAddressId, setSelectedAddressId] = React.useState<string | null>(null);
+  const [isAddingNewAddress, setIsAddingNewAddress] = React.useState(false);
+  const [newAddress, setNewAddress] = React.useState({ street_address: '', city: '', state: '', postal_code: '', country: 'India', landmark: '' });
   const [error, setError] = React.useState<string | null>(null);
 
   React.useEffect(() => {
     if (user) {
-      const fetchCartItems = async () => {
-        const data = await getCartItems(user.id);
-        setCartItems(data);
+      const fetchData = async () => {
+        const cartData = await getCartItems(user.id);
+        setCartItems(cartData);
+        const addressData = await getAddresses(user.id);
+        setAddresses(addressData);
+        if (addressData.length > 0) {
+          setSelectedAddressId(addressData[0].id);
+        } else {
+          setIsAddingNewAddress(true); // Open form if no addresses exist
+        }
       };
-      fetchCartItems();
+      fetchData();
     }
   }, [user]);
 
+  const handleSaveAddress = async () => {
+    if (!user) return;
+    try {
+      const savedAddress = await addAddress(user.id, newAddress);
+      setAddresses([...addresses, savedAddress]);
+      setSelectedAddressId(savedAddress.id);
+      setIsAddingNewAddress(false);
+      setNewAddress({ street_address: '', city: '', state: '', postal_code: '', country: 'India', landmark: '' });
+    } catch (error: any) {
+      setError(error.message);
+    }
+  };
+
   const handlePlaceOrder = async () => {
-    if (user) {
-      try {
-        const order = await createOrder(user.id, total, shippingAddress, cartItems);
-        const { data } = await supabase.functions.invoke('payu-create-payment', {
-          body: { amount: total, txnid: order.id, productinfo: 'Yanshay Order', firstname: shippingAddress.firstName, email: user.email },
-        });
-        const payuConfig = {
-          key: 'YOUR_PAYU_KEY', // Replace with your actual PayU key
-          ...data,
-        };
-        // @ts-ignore
-        window.payu.launch(payuConfig);
-      } catch (error: any) {
-        setError(error.message);
-      }
+    if (!user || !selectedAddressId) {
+      setError('Please select a shipping address.');
+      return;
+    }
+
+    try {
+      const order = await createOrder(user.id, total, selectedAddressId, cartItems);
+      router.push(`/payment/${order.id}`);
+    } catch (error: any) {
+      setError(error.message);
     }
   };
 
@@ -49,64 +69,59 @@ const CheckoutPage = () => {
   const total = subtotal + 5.00;
 
   return (
-    <>
-      <Script src="https://sdk.payu.com/js/v1/payu-sdks.js" />
       <div className="container mx-auto py-16">
-      <h1 className="text-4xl font-bold text-center mb-8">Checkout</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div>
+        <h1 className="text-4xl font-bold text-center mb-8">Checkout</h1>
+        <div className="max-w-2xl mx-auto">
           <h2 className="text-2xl font-bold mb-4">Shipping Information</h2>
-          <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="firstName">First Name</Label>
-                <Input id="firstName" value={shippingAddress.firstName} onChange={(e) => setShippingAddress({ ...shippingAddress, firstName: e.target.value })} />
-              </div>
-              <div>
-                <Label htmlFor="lastName">Last Name</Label>
-                <Input id="lastName" value={shippingAddress.lastName} onChange={(e) => setShippingAddress({ ...shippingAddress, lastName: e.target.value })} />
-              </div>
-            </div>
-            <div>
-              <Label htmlFor="address">Address</Label>
-              <Input id="address" value={shippingAddress.address} onChange={(e) => setShippingAddress({ ...shippingAddress, address: e.target.value })} />
-            </div>
-            <div className="grid grid-cols-3 gap-4">
-              <div>
-                <Label htmlFor="city">City</Label>
-                <Input id="city" value={shippingAddress.city} onChange={(e) => setShippingAddress({ ...shippingAddress, city: e.target.value })} />
-              </div>
-              <div>
-                <Label htmlFor="state">State</Label>
-                <Input id="state" value={shippingAddress.state} onChange={(e) => setShippingAddress({ ...shippingAddress, state: e.target.value })} />
-              </div>
-              <div>
-                <Label htmlFor="zip">ZIP Code</Label>
-                <Input id="zip" value={shippingAddress.zip} onChange={(e) => setShippingAddress({ ...shippingAddress, zip: e.target.value })} />
-              </div>
-            </div>
-          </div>
-        </div>
-        <div>
-          <div className="border p-4 rounded-lg">
-            <h2 className="text-2xl font-bold mb-4">Order Summary</h2>
-            {cartItems.map(item => (
-              <div key={item.id} className="flex justify-between mb-2">
-                <p>{item.product_variants.products.name}</p>
-                <p>${item.product_variants.price}</p>
-              </div>
+          <RadioGroup value={selectedAddressId || ''} onValueChange={setSelectedAddressId}>
+            {addresses.map(address => (
+              <Label key={address.id} htmlFor={address.id} className="flex items-center space-x-2 border p-4 rounded-lg cursor-pointer mb-2">
+                <RadioGroupItem value={address.id} id={address.id} />
+                <div>
+                  <p>{address.street_address}</p>
+                  <p>{address.landmark}</p>
+                  <p>{address.city}, {address.state} {address.postal_code}</p>
+                  <p>{address.country}</p>
+                </div>
+              </Label>
             ))}
-            <div className="border-t pt-4 flex justify-between font-bold text-lg">
-              <p>Total</p>
-              <p>${total.toFixed(2)}</p>
+          </RadioGroup>
+          
+          {!isAddingNewAddress && (
+            <Button variant="link" onClick={() => setIsAddingNewAddress(true)} className="mt-4">
+              + Add New Address
+            </Button>
+          )}
+
+          {isAddingNewAddress && (
+            <div className="space-y-4 mt-4 border p-4 rounded-lg">
+              <h3 className="text-lg font-bold">Add a new address</h3>
+              <Input placeholder="Street Address" value={newAddress.street_address} onChange={(e) => setNewAddress({ ...newAddress, street_address: e.target.value })} />
+              <Input placeholder="Landmark" value={newAddress.landmark || ''} onChange={(e) => setNewAddress({ ...newAddress, landmark: e.target.value })} />
+              <div className="grid grid-cols-3 gap-4">
+                <Input placeholder="City" value={newAddress.city} onChange={(e) => setNewAddress({ ...newAddress, city: e.target.value })} />
+                <Input placeholder="State" value={newAddress.state} onChange={(e) => setNewAddress({ ...newAddress, state: e.target.value })} />
+                <Input placeholder="Postal Code" value={newAddress.postal_code} onChange={(e) => setNewAddress({ ...newAddress, postal_code: e.target.value })} />
+              </div>
+              <div className="flex gap-4">
+                <Button onClick={handleSaveAddress}>Save Address</Button>
+                <Button variant="ghost" onClick={() => setIsAddingNewAddress(false)}>Cancel</Button>
+              </div>
             </div>
-            <Button size="lg" className="w-full mt-4" onClick={handlePlaceOrder}>Place Order</Button>
-            {error && <p className="text-red-500 text-center mt-4">{error}</p>}
-          </div>
+          )}
+
+          {selectedAddressId && !isAddingNewAddress && (
+            <div className="mt-8 border-t pt-8">
+               <div className="flex justify-between font-bold text-lg mb-4">
+                <p>Total</p>
+                <p>₹{total.toFixed(2)}</p>
+              </div>
+              <Button size="lg" className="w-full" onClick={handlePlaceOrder}>Place Order</Button>
+            </div>
+          )}
+          {error && <p className="text-red-500 text-center mt-4">{error}</p>}
         </div>
       </div>
-    </div>
-    </>
   );
 };
 

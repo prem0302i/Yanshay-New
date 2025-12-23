@@ -2,65 +2,15 @@
 
 import * as React from 'react';
 import { getProducts } from '@/services/product.service';
-import { supabase } from '@/lib/supabase';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { useAuth } from '@/context/AuthContext';
-import { addToCart } from '@/services/cart.service';
-import { toast } from 'sonner';
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 const ShopPage = () => {
   const [products, setProducts] = React.useState<any[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
   const [error, setError] = React.useState<string | null>(null);
   const [filters, setFilters] = React.useState({ category: '', minPrice: 0, maxPrice: 1000 });
-  const { user } = useAuth();
-  const router = useRouter();
-
-  const handleAddToCart = async (product: any) => {
-    // First, fetch the default variant for the product
-    const { data: variant, error: variantError } = await supabase
-      .from('product_variants')
-      .select('id')
-      .eq('product_id', product.id)
-      .limit(1)
-      .single();
-
-    if (variantError || !variant) {
-      toast.error('This product is out of stock.');
-      return;
-    }
-
-    if (!user) {
-      const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-      const existingProduct = cart.find((item: any) => item.variant_id === variant.id);
-
-      if (existingProduct) {
-        existingProduct.quantity += 1;
-      } else {
-        cart.push({ ...product, variant_id: variant.id, quantity: 1 });
-      }
-
-      localStorage.setItem('cart', JSON.stringify(cart));
-      toast.success('Item added to cart!');
-      return;
-    }
-
-
-    if (variantError || !variant) {
-      toast.error('This product is out of stock.');
-      return;
-    }
-
-    try {
-      await addToCart(user.id, variant.id, 1);
-      toast.success('Item added to cart!');
-    } catch (error: any) {
-      toast.error(error.message);
-    }
-  };
 
   React.useEffect(() => {
     const fetchProducts = async () => {
@@ -97,19 +47,15 @@ const ShopPage = () => {
                   </div>
                 ))
               : products.map((product) => (
-                  <Card key={product.id}>
-                    <CardContent className="p-4">
-                      {product.image_url && <img src={product.image_url} alt={product.name} className="h-48 w-full object-cover mb-4" />}
-                      <h3 className="font-bold">{product.name}</h3>
-                      <p className="text-muted-foreground">${product.price || 'N/A'}</p>
-                      <Button
-                        className="mt-4 w-full"
-                        onClick={() => handleAddToCart(product)}
-                      >
-                        Add to Cart
-                      </Button>
-                    </CardContent>
-                  </Card>
+                  <Link href={`/shop/${product.id}`} key={product.id}>
+                    <Card className="hover:shadow-lg transition-shadow">
+                      <CardContent className="p-4">
+                        {product.image_url && <img src={product.image_url} alt={product.name} className="h-48 w-full object-cover mb-4" />}
+                        <h3 className="font-bold">{product.name}</h3>
+                        {/* Price display can be updated here later based on variants */}
+                      </CardContent>
+                    </Card>
+                  </Link>
                 ))}
           </div>
         </div>

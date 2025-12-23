@@ -53,7 +53,7 @@ const AdminOrdersPage = () => {
                   </SelectContent>
                 </Select>
               </TableCell>
-              <TableCell>${order.total_amount}</TableCell>
+              <TableCell>₹{order.total_amount}</TableCell>
             </TableRow>
           ))}
         </TableBody>

@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Button } from '@/components/ui/button';
@@ -16,13 +16,18 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog';
 
+const variantSchema = z.object({
+  size: z.string().min(1, 'Size is required'),
+  price: z.preprocess((val) => Number(val), z.number().min(0, 'Price must be positive')),
+  stock_quantity: z.preprocess((val) => Number(val), z.number().int().min(0, 'Stock must be a positive integer')),
+});
+
 const productSchema = z.object({
   id: z.string().optional(),
   name: z.string().min(1, 'Name is required'),
   description: z.string().min(1, 'Description is required'),
   imageFile: z.any().optional(),
-  price: z.preprocess((val) => Number(val), z.number().min(0, 'Price must be a positive number')),
-  stock: z.preprocess((val) => Number(val), z.number().int().min(0, 'Stock must be a positive integer')),
+  variants: z.array(variantSchema).min(1, 'At least one size variant is required'),
 });
 
 type ProductFormData = z.infer<typeof productSchema>;
@@ -37,6 +42,7 @@ export const ProductForm = React.forwardRef<HTMLDivElement, ProductFormProps>(
     const [isSaving, setIsSaving] = React.useState(false);
     const {
       register,
+      control,
       handleSubmit,
       formState: { errors },
       reset,
@@ -46,19 +52,31 @@ export const ProductForm = React.forwardRef<HTMLDivElement, ProductFormProps>(
         id: product?.id || undefined,
         name: product?.name || '',
         description: product?.description || '',
-        price: product?.price || 0,
-        stock: product?.stock || 0,
+        variants: product?.variants || [{ size: '', price: 0, stock_quantity: 0 }],
       },
     });
 
+    const { fields, append, remove } = useFieldArray({
+      control,
+      name: 'variants',
+    });
+
     React.useEffect(() => {
-      reset({
-        id: product?.id || undefined,
-        name: product?.name || '',
-        description: product?.description || '',
-        price: product?.price || 0,
-        stock: product?.stock || 0,
-      });
+      if (product) {
+        reset({
+          id: product.id,
+          name: product.name,
+          description: product.description,
+          variants: product.variants.length > 0 ? product.variants : [{ size: '', price: 0, stock_quantity: 0 }],
+        });
+      } else {
+        reset({
+          id: undefined,
+          name: '',
+          description: '',
+          variants: [{ size: '', price: 0, stock_quantity: 0 }],
+        });
+      }
     }, [product, reset]);
 
     const onInvalid = (errors: any) => {
@@ -105,14 +123,28 @@ export const ProductForm = React.forwardRef<HTMLDivElement, ProductFormProps>(
             <Input id="imageFile" type="file" {...register('imageFile')} />
           </div>
           <div>
-            <Label htmlFor="price">Price</Label>
-            <Input id="price" type="number" {...register('price')} />
-            {errors.price && <p className="text-red-500 text-sm">{errors.price.message}</p>}
-          </div>
-          <div>
-            <Label htmlFor="stock">Stock</Label>
-            <Input id="stock" type="number" {...register('stock')} />
-            {errors.stock && <p className="text-red-500 text-sm">{errors.stock.message}</p>}
+            <Label>Sizes / Variants</Label>
+            <div className="max-h-48 overflow-y-auto pr-2">
+              {fields.map((field, index) => (
+                <div key={field.id} className="flex items-center gap-2 mb-2 p-2 border rounded-md">
+                  <div className="flex-1">
+                    <Label htmlFor={`variants.${index}.size`} className="sr-only">Size</Label>
+                    <Input placeholder="Size (e.g., M)" {...register(`variants.${index}.size`)} />
+                  </div>
+                  <div className="flex-1">
+                    <Label htmlFor={`variants.${index}.price`} className="sr-only">Price</Label>
+                    <Input placeholder="Price" type="number" {...register(`variants.${index}.price`)} />
+                  </div>
+                  <div className="flex-1">
+                    <Label htmlFor={`variants.${index}.stock_quantity`} className="sr-only">Stock</Label>
+                    <Input placeholder="Stock" type="number" {...register(`variants.${index}.stock_quantity`)} />
+                  </div>
+                  <Button type="button" variant="destructive" size="sm" onClick={() => remove(index)}>Remove</Button>
+                </div>
+              ))}
+            </div>
+            <Button type="button" onClick={() => append({ size: '', price: 0, stock_quantity: 0 })}>Add Size</Button>
+            {errors.variants && <p className="text-red-500 text-sm">{errors.variants.message || (errors.variants as any).root?.message}</p>}
           </div>
           <DialogFooter>
             <Button type="submit" disabled={isSaving}>
