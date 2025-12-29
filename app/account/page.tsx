@@ -4,10 +4,12 @@ import * as React from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { supabase } from '@/lib/supabase';
 import { Button } from '@/components/ui/button';
+import { ChangePasswordModal } from '@/components/ChangePasswordModal';
 
 const AccountPage = () => {
   const { user, signOut } = useAuth();
   const [orders, setOrders] = React.useState<any[]>([]);
+  const [isChangePasswordOpen, setIsChangePasswordOpen] = React.useState(false);
 
   React.useEffect(() => {
     if (user) {
@@ -39,7 +41,6 @@ const AccountPage = () => {
           <ul className="space-y-2">
             <li><a href="#orders" className="font-bold">Orders</a></li>
             <li><a href="#saved-designs" className="hover:text-primary transition-colors">Saved Designs</a></li>
-            <li><a href="#settings" className="hover:text-primary transition-colors">Settings</a></li>
           </ul>
         </div>
         <div className="col-span-2">
@@ -49,7 +50,10 @@ const AccountPage = () => {
               <div className="space-y-2">
                 <p><strong>Full Name:</strong> {user.full_name}</p>
                 <p><strong>Email:</strong> {user.email}</p>
-                <Button onClick={signOut} variant="destructive" className="mt-4">Logout</Button>
+                <div className="flex gap-4 mt-4">
+                  <Button onClick={() => setIsChangePasswordOpen(true)} variant="outline">Change Password</Button>
+                  <Button onClick={signOut} variant="destructive">Logout</Button>
+                </div>
               </div>
             )}
           </div>
@@ -67,6 +71,7 @@ const AccountPage = () => {
           </div>
         </div>
       </div>
+      <ChangePasswordModal open={isChangePasswordOpen} onOpenChange={setIsChangePasswordOpen} />
     </div>
   );
 };

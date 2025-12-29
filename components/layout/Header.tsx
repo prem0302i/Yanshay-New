@@ -1,10 +1,12 @@
 'use client';
 
 import * as React from 'react';
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useAuth } from '@/context/AuthContext';
-import ThemeToggle from '@/components/ui/ThemeToggle';
+
+const ThemeToggle = dynamic(() => import('@/components/ui/ThemeToggle'), { ssr: false });
 import { Button } from '@/components/ui/button';
 import { Menu, X } from 'lucide-react';
 

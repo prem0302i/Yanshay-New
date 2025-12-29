@@ -5,7 +5,6 @@ import { useAuth } from '@/context/AuthContext';
 import { getCartItems, removeFromCart, updateCartItemQuantity } from '@/services/cart.service';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
-import LoginPopup from '@/components/LoginPopup';
 import { toast } from 'sonner';
 
 const CartPage = () => {
@@ -14,7 +13,6 @@ const CartPage = () => {
   const [cartItems, setCartItems] = React.useState<any[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
   const [error, setError] = React.useState<string | null>(null);
-  const [isLoginPopupOpen, setIsLoginPopupOpen] = React.useState(false);
 
   React.useEffect(() => {
     if (user) {
@@ -82,7 +80,7 @@ const CartPage = () => {
       return;
     }
     if (!user) {
-      setIsLoginPopupOpen(true);
+      router.push('/login');
     } else {
       router.push('/checkout');
     }
@@ -91,47 +89,43 @@ const CartPage = () => {
   return (
     <div className="container mx-auto py-16">
       <h1 className="text-4xl font-bold text-center mb-8">Shopping Cart</h1>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div className="col-span-2">
-          <div className="space-y-4">
-            {isLoading ? (
-              <p>Loading...</p>
-            ) : error ? (
-              <p className="text-red-500">{error}</p>
-            ) : cartItems.length === 0 ? (
-              <div className="col-span-3 flex flex-col items-center justify-center text-center py-16">
-                <h2 className="text-2xl font-bold mb-4">Your Cart is Empty</h2>
-                <p className="text-muted-foreground mb-8">Looks like you haven't added anything to your cart yet.</p>
-                <Button onClick={() => router.push('/shop')}>Continue Shopping</Button>
-              </div>
-            ) : (
-              <div className="border rounded-lg">
-                {cartItems.map((item, index) => (
-                  <div key={item.variant_id || item.id} className={`flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 ${index < cartItems.length - 1 ? 'border-b' : ''}`}>
-                    <div className="flex items-center gap-4">
-                      <img src={item.product_variants ? item.product_variants.products.image_url : item.image_url} alt={item.product_variants ? item.product_variants.products.name : item.name} className="h-24 w-24 object-cover rounded-md" />
-                      <div>
-                        <h3 className="font-bold">{item.product_variants ? item.product_variants.products.name : item.name}</h3>
-                        {item.product_variants && <p className="text-muted-foreground">Size: {item.product_variants.size}</p>}
-                        <p className="font-bold mt-2">₹{item.product_variants ? item.product_variants.price : item.price}</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-4 self-end sm:self-center">
-                      <div className="flex items-center gap-2">
-                        <Button variant="outline" size="icon" onClick={() => handleUpdateQuantity(item.variant_id, item.quantity - 1)}>-</Button>
-                        <span>{item.quantity}</span>
-                        <Button variant="outline" size="icon" onClick={() => handleUpdateQuantity(item.variant_id, item.quantity + 1)}>+</Button>
-                      </div>
-                      <Button variant="outline" size="sm" onClick={() => handleRemove(item.variant_id)}>Remove</Button>
+      {isLoading ? (
+        <p className="text-center min-h-[50vh] flex items-center justify-center">Loading...</p>
+      ) : error ? (
+        <p className="text-red-500 text-center min-h-[50vh] flex items-center justify-center">{error}</p>
+      ) : cartItems.length === 0 ? (
+        <div className="flex flex-col items-center justify-center text-center py-16 min-h-[50vh]">
+          <h2 className="text-2xl font-bold mb-4">Your Cart is Empty</h2>
+          <p className="text-muted-foreground mb-8">Looks like you haven't added anything to your cart yet.</p>
+          <Button onClick={() => router.push('/shop')}>Continue Shopping</Button>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="md:col-span-2">
+            <div className="border rounded-lg">
+              {cartItems.map((item, index) => (
+                <div key={item.variant_id || item.id} className={`flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 ${index < cartItems.length - 1 ? 'border-b' : ''}`}>
+                  <div className="flex items-center gap-4">
+                    <img src={item.product_variants ? item.product_variants.products.image_url : item.image_url} alt={item.product_variants ? item.product_variants.products.name : item.name} className="h-24 w-24 object-cover rounded-md" />
+                    <div>
+                      <h3 className="font-bold">{item.product_variants ? item.product_variants.products.name : item.name}</h3>
+                      {item.product_variants && <p className="text-muted-foreground">Size: {item.product_variants.size}</p>}
+                      <p className="font-bold mt-2">₹{item.product_variants ? item.product_variants.price : item.price}</p>
                     </div>
                   </div>
-                ))}
-              </div>
-            )}
+                  <div className="flex items-center gap-4 self-end sm:self-center">
+                    <div className="flex items-center gap-2">
+                      <Button variant="outline" size="icon" onClick={() => handleUpdateQuantity(item.variant_id, item.quantity - 1)}>-</Button>
+                      <span>{item.quantity}</span>
+                      <Button variant="outline" size="icon" onClick={() => handleUpdateQuantity(item.variant_id, item.quantity + 1)}>+</Button>
+                    </div>
+                    <Button variant="outline" size="sm" onClick={() => handleRemove(item.variant_id)}>Remove</Button>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-        {cartItems.length > 0 && (
-          <div className="col-span-1">
+          <div className="md:col-span-1">
             <div className="border p-4 rounded-lg">
               <h2 className="text-2xl font-bold mb-4">Summary</h2>
               <div className="flex justify-between mb-2">
@@ -139,11 +133,10 @@ const CartPage = () => {
                 <p>₹{subtotal.toFixed(2)}</p>
               </div>
               <Button size="lg" className="w-full mt-4" onClick={handleCheckout}>Checkout</Button>
-              <LoginPopup open={isLoginPopupOpen} onOpenChange={setIsLoginPopupOpen} />
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 };
