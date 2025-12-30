@@ -47,7 +47,8 @@ export const addToCart = async (userId: string, variantId: number, quantity: num
     const { data, error } = await supabase
       .from('carts')
       .update({ quantity: newQuantity })
-      .eq('id', existingItem.id);
+      .eq('id', existingItem.id)
+      .select();
 
     if (error) {
       throw new Error(error.message);
@@ -57,7 +58,8 @@ export const addToCart = async (userId: string, variantId: number, quantity: num
     // If item doesn't exist, insert a new row
     const { data, error } = await supabase
       .from('carts')
-      .insert([{ user_id: userId, variant_id: variantId, quantity }]);
+      .insert([{ user_id: userId, variant_id: variantId, quantity }])
+      .select();
 
     if (error) {
       throw new Error(error.message);

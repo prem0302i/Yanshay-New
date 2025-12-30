@@ -8,7 +8,8 @@ import { useAuth } from '@/context/AuthContext';
 
 const ThemeToggle = dynamic(() => import('@/components/ui/ThemeToggle'), { ssr: false });
 import { Button } from '@/components/ui/button';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, ShoppingCart, User } from 'lucide-react';
+import CartCount from './CartCount';
 
 const Header = () => {
   const { user, signOut } = useAuth();
@@ -28,14 +29,15 @@ const Header = () => {
             </Link>
           )}
         </div>
+
         {/* Desktop Menu */}
         <div className="hidden md:flex items-center gap-6">
           <nav className="flex items-center gap-6">
             {user?.role !== 'admin' && (
               <>
+                <Link href="/" className="hover:text-primary transition-colors">Home</Link>
                 <Link href="/shop" className="hover:text-primary transition-colors">Shop</Link>
                 <Link href="/contact" className="hover:text-primary transition-colors">Contact</Link>
-                <Link href="/cart" className="hover:text-primary transition-colors">Cart</Link>
                 <Link href="/about" className="hover:text-primary transition-colors">About</Link>
               </>
             )}
@@ -44,7 +46,13 @@ const Header = () => {
             {user ? (
               <>
                 {user.role !== 'admin' ? (
-                  <Link href="/account" className="hover:text-primary transition-colors">Account</Link>
+                  <>
+                    <Link href="/cart" className="relative hover:text-primary transition-colors">
+                      <ShoppingCart />
+                      <CartCount />
+                    </Link>
+                    <Link href="/account" className="hover:text-primary transition-colors"><User /></Link>
+                  </>
                 ) : (
                   <Button onClick={signOut} variant="destructive">Logout</Button>
                 )}
@@ -73,9 +81,9 @@ const Header = () => {
             <nav className="flex flex-col items-center gap-4">
               {user?.role !== 'admin' && (
                 <>
+                  <Link href="/" className="hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>Home</Link>
                   <Link href="/shop" className="hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>Shop</Link>
                   <Link href="/contact" className="hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>Contact</Link>
-                  <Link href="/cart" className="hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>Cart</Link>
                   <Link href="/about" className="hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>About</Link>
                 </>
               )}
@@ -84,7 +92,13 @@ const Header = () => {
               {user ? (
                 <>
                   {user.role !== 'admin' ? (
-                    <Link href="/account" className="hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>Account</Link>
+                    <div className="flex items-center gap-4">
+                      <Link href="/cart" className="relative hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>
+                        <ShoppingCart />
+                        <CartCount />
+                      </Link>
+                      <Link href="/account" className="hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}><User /></Link>
+                    </div>
                   ) : (
                     <Button onClick={() => { signOut(); setIsMenuOpen(false); }} variant="destructive">Logout</Button>
                   )}

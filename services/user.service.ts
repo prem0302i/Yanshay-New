@@ -10,6 +10,23 @@ export const updateUserPassword = async (newPassword: string) => {
   return data;
 };
 
+export const deleteUser = async (id: string) => {
+  const response = await fetch('/api/admin/users', {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ id }),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.error || 'Failed to delete user');
+  }
+
+  return await response.json();
+};
+
 export const getUsers = async () => {
   const response = await fetch('/api/admin/users');
   if (!response.ok) {

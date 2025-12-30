@@ -3,19 +3,33 @@
 export const dynamic = 'force-dynamic';
 
 import * as React from 'react';
-import { getUsers } from '@/services/user.service';
+import { getUsers, deleteUser } from '@/services/user.service';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Button } from '@/components/ui/button';
 
 const AdminUsersPage = () => {
   const [users, setUsers] = React.useState<any[]>([]);
 
-  React.useEffect(() => {
-    const fetchUsers = async () => {
-      const data = await getUsers();
-      setUsers(data || []);
-    };
-    fetchUsers();
+  const fetchUsers = React.useCallback(async () => {
+    const data = await getUsers();
+    setUsers(data || []);
   }, []);
+
+  React.useEffect(() => {
+    fetchUsers();
+  }, [fetchUsers]);
+
+  const handleDelete = async (userId: string) => {
+    if (window.confirm('Are you sure you want to delete this user?')) {
+      try {
+        await deleteUser(userId);
+        fetchUsers(); // Refresh the user list
+      } catch (error) {
+        console.error('Failed to delete user:', error);
+        alert('Failed to delete user.');
+      }
+    }
+  };
 
   return (
     <div>
@@ -25,6 +39,7 @@ const AdminUsersPage = () => {
           <TableRow>
             <TableHead>Full Name</TableHead>
             <TableHead>Email</TableHead>
+            <TableHead>Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -32,6 +47,9 @@ const AdminUsersPage = () => {
             <TableRow key={user.id}>
               <TableCell>{user.full_name}</TableCell>
               <TableCell>{user.email}</TableCell>
+              <TableCell>
+                <Button variant="destructive" onClick={() => handleDelete(user.id)}>Delete</Button>
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
