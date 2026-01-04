@@ -119,10 +119,13 @@ export const deleteProduct = async (id: string) => {
 
   const variantIds = variants.map((v) => v.id);
 
-  // Delete all cart items associated with the product's variants
+  // Delete all cart and order items associated with the product's variants
   if (variantIds.length > 0) {
     const { error: cartError } = await supabase.from('carts').delete().in('variant_id', variantIds);
     if (cartError) throw cartError;
+
+    const { error: orderItemsError } = await supabase.from('order_items').delete().in('variant_id', variantIds);
+    if (orderItemsError) throw orderItemsError;
   }
 
   // Then, delete all variants associated with the product

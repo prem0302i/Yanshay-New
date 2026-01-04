@@ -36,7 +36,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session?.user) {
         const { data: userProfile } = await supabase
-          .from('users')
+          .from('profiles')
           .select('*')
           .eq('id', session.user.id)
           .single();
@@ -58,7 +58,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
         if (session?.user) {
           const { data: userProfile, error: profileError } = await supabase
-            .from('users')
+            .from('profiles')
             .select('*')
             .eq('id', session.user.id)
             .single();
@@ -77,34 +77,45 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     fetchSessionAndProfile();
 
-    const { data: authListener } = supabase.auth.onAuthStateChange(async (_event, session) => {
+    const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
       setSession(session);
-      if (session?.user) {
-        try {
-          const { data: userProfile, error: profileError } = await supabase
-            .from('users')
-            .select('*')
-            .eq('id', session.user.id)
-            .single();
-          if (profileError) throw profileError;
-          setUser({ ...session.user, ...userProfile });
+      if (event === 'SIGNED_IN' && session?.user) {
+        const { data: userProfile, error: profileError } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', session.user.id)
+          .single();
 
-          const guestCart = JSON.parse(localStorage.getItem('cart') || '[]');
-          if (guestCart.length > 0) {
-            for (const item of guestCart) {
-              await addToCart(session.user.id, item.variant_id, item.quantity);
-            }
-            localStorage.removeItem('cart');
+        if (userProfile) {
+          const fullUser = { ...session.user, ...userProfile };
+          setUser(fullUser);
+          const targetUrl = fullUser.role === 'admin' ? '/admin' : '/';
+          window.location.href = targetUrl;
+        } else if (profileError) {
+          // Profile doesn't exist, create it
+          const { data: newProfile, error: createError } = await supabase
+            .from('profiles')
+            .insert({ 
+              id: session.user.id, 
+              full_name: session.user.user_metadata.full_name,
+              role: 'user'
+            })
+            .select()
+            .single();
+
+          if (newProfile) {
+            const fullUser = { ...session.user, ...newProfile };
+            setUser(fullUser);
+            window.location.href = '/'; // Redirect to home after profile creation
+          } else {
+            console.error('Error creating profile:', createError);
+            await supabase.auth.signOut();
           }
-        } catch (error) {
-          console.error('Error fetching profile on auth change:', error);
-          setUser(session.user); // Fallback to auth user data
         }
-      } else {
+      } else if (event === 'SIGNED_OUT') {
         setUser(null);
       }
       setLoading(false);
-      router.refresh();
     });
 
     return () => {

@@ -20,47 +20,14 @@ const LoginForm = () => {
     setError(null);
     setLoading(true);
 
-    try {
-      const { data: { user }, error } = await supabase.auth.signInWithPassword({ email, password });
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
 
-      if (error) {
-        toast.error(error.message);
-        setError(error.message);
-        setLoading(false);
-        return;
-      }
-
-      if (user) {
-        const { data: profile, error: profileError } = await supabase
-          .from('users')
-          .select('role')
-          .eq('id', user.id)
-          .single();
-
-        if (profileError || !profile) {
-          const msg = 'Failed to get user profile. Please try again.';
-          toast.error(msg);
-          setError(msg);
-          await supabase.auth.signOut(); // Log out the user to be safe
-        } else {
-          toast.success('Logged in successfully! Redirecting...');
-          // Use window.location for a more forceful redirect
-          const targetUrl = profile.role === 'admin' ? '/admin' : '/';
-          window.location.href = targetUrl;
-          return; // Stop execution to allow redirect to happen
-        }
-      } else {
-        const msg = 'Login failed. Please check your credentials.';
-        toast.error(msg);
-        setError(msg);
-      }
-    } catch (err) {
-      const msg = 'An unexpected error occurred during login.';
-      toast.error(msg);
-      setError(msg);
-    } finally {
-      setLoading(false);
+    if (error) {
+      toast.error(error.message);
+      setError(error.message);
     }
+
+    setLoading(false);
   };
 
   return (

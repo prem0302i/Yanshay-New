@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useAuth } from '@/context/AuthContext';
+import { useTheme } from 'next-themes';
 
 const ThemeToggle = dynamic(() => import('@/components/ui/ThemeToggle'), { ssr: false });
 import { Button } from '@/components/ui/button';
@@ -13,6 +14,7 @@ import CartCount from './CartCount';
 
 const Header = () => {
   const { user, signOut } = useAuth();
+  const { theme } = useTheme();
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
   return (
@@ -21,7 +23,7 @@ const Header = () => {
         <div className={user?.role === 'admin' ? '-ml-4' : ''}>
           {user?.role === 'admin' ? (
             <Link href="/admin">
-              <Image src="/yanshay-logo.jpg" alt="Yanshay Logo" width={60} height={60} className="rounded-full" />
+              <Image src={theme === 'dark' ? '/yanshay-logo-dark.jpg' : '/yanshay-logo.jpg'} alt="Yanshay Logo" width={100} height={100} className="rounded-full object-contain w-[100px] h-[100px]" />
             </Link>
           ) : (
             <Link href="/" className="text-2xl font-bold text-primary">
