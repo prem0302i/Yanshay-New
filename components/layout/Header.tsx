@@ -20,20 +20,12 @@ const Header = () => {
 
   return (
     <header className="bg-background border-b">
-      <div className="container mx-auto flex items-center justify-between p-4 flex-wrap">
-        <div className="flex-shrink-0">
-          <Logo />
-        </div>
-
-        {/* Desktop Menu */}
-        <div className="hidden md:flex flex-grow justify-center px-8">
-          <div className="w-full max-w-md">
-            <SearchBar />
+      <div className="container mx-auto flex items-center justify-between p-4">
+        <div className="flex items-center gap-6">
+          <div className="flex-shrink-0">
+            <Logo />
           </div>
-        </div>
-
-        <div className="hidden md:flex items-center gap-6 flex-shrink-0">
-          <nav className="flex items-center gap-6">
+          <nav className="hidden md:flex items-center gap-6">
             {user?.role !== 'admin' && (
               <>
                 <Link href="/" className="hover:text-primary transition-colors"><Home /></Link>
@@ -41,36 +33,43 @@ const Header = () => {
               </>
             )}
           </nav>
-          <div className="flex items-center gap-4">
-            {user ? (
-              <>
-                {user.role !== 'admin' ? (
-                  <>
-                    <Link href="/account" className="hover:text-primary transition-colors"><User /></Link>
-                    <Link href="/cart" className="relative hover:text-primary transition-colors">
-                      <ShoppingCart />
-                      <CartCount />
-                    </Link>
-                  </>
-                ) : (
-                  <Button onClick={signOut} variant="destructive">Logout</Button>
-                )}
-              </>
-            ) : (
-              <>
-                <Link href="/login" className="hover:text-primary transition-colors">Login</Link>
-                <Link href="/cart" className="relative hover:text-primary transition-colors">
-                  <ShoppingCart />
-                  <CartCount />
-                </Link>
-              </>
-            )}
-            <ThemeToggle />
+        </div>
+
+        <div className="hidden md:flex flex-grow justify-center px-8">
+          <div className="w-full max-w-md">
+            <SearchBar />
           </div>
         </div>
 
+        <div className="hidden md:flex items-center gap-4">
+          {user ? (
+            <>
+              {user.role !== 'admin' ? (
+                <>
+                  <Link href="/account" className="hover:text-primary transition-colors"><User /></Link>
+                  <Link href="/cart" className="relative hover:text-primary transition-colors">
+                    <ShoppingCart />
+                    <CartCount />
+                  </Link>
+                </>
+              ) : (
+                <Button onClick={signOut} variant="destructive">Logout</Button>
+              )}
+            </>
+          ) : (
+            <>
+              <Link href="/login" className="hover:text-primary transition-colors">Login</Link>
+              <Link href="/cart" className="relative hover:text-primary transition-colors">
+                <ShoppingCart />
+                <CartCount />
+              </Link>
+            </>
+          )}
+          <ThemeToggle />
+        </div>
+
         {/* Mobile Menu Button */}
-        <div className="md:hidden flex items-center">
+        <div className="flex items-center md:hidden">
           <ThemeToggle />
           <Button variant="ghost" size="icon" onClick={() => setIsMenuOpen(!isMenuOpen)}>
             {isMenuOpen ? <X /> : <Menu />}
