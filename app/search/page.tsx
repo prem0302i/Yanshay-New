@@ -2,12 +2,12 @@
 
 export const dynamic = 'force-dynamic';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { searchProducts } from '@/services/product.service';
 import Link from 'next/link';
 
-const SearchPage = () => {
+const SearchContent = () => {
   const searchParams = useSearchParams();
   const query = searchParams.get('q');
   const [products, setProducts] = useState<any[]>([]);
@@ -19,6 +19,9 @@ const SearchPage = () => {
         setLoading(true);
         const results = await searchProducts(query);
         setProducts(results);
+        setLoading(false);
+      } else {
+        setProducts([]);
         setLoading(false);
       }
     };
@@ -45,6 +48,14 @@ const SearchPage = () => {
         <p>No products found for "{query}".</p>
       )}
     </div>
+  );
+};
+
+const SearchPage = () => {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <SearchContent />
+    </Suspense>
   );
 };
 
