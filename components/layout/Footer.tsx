@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { Instagram } from 'lucide-react';
 
 const Footer = () => {
   return (
@@ -27,7 +28,7 @@ const Footer = () => {
           <div>
             <h3 className="text-lg font-bold mb-4">Follow Us</h3>
             <div className="flex gap-4">
-              <Link href="https://www.instagram.com/yanshay.ofc?igsh=bnVnM256N240MW5r" className="hover:text-primary transition-colors">Instagram</Link>
+              <Link href="https://www.instagram.com/yanshay.ofc?igsh=bnVnM256N240MW5r" className="hover:text-primary transition-colors"><Instagram /></Link>
             </div>
           </div>
         </div>
