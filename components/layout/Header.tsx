@@ -3,11 +3,11 @@
 import * as React from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
-import Image from 'next/image';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme } from 'next-themes';
 
 const ThemeToggle = dynamic(() => import('@/components/ui/ThemeToggle'), { ssr: false });
+const Logo = dynamic(() => import('@/components/layout/Logo'), { ssr: false });
 import { Button } from '@/components/ui/button';
 import { Menu, X, ShoppingCart, User, Home, ShoppingBag } from 'lucide-react';
 import CartCount from './CartCount';
@@ -20,24 +20,19 @@ const Header = () => {
 
   return (
     <header className="bg-background border-b">
-      <div className="container mx-auto flex justify-between items-center p-4 flex-wrap">
-        <div className={user?.role === 'admin' ? '-ml-4' : ''}>
-          {user?.role === 'admin' ? (
-            <Link href="/admin">
-              <Image src={theme === 'dark' ? '/yanshay-logo-dark.jpg' : '/yanshay-logo.jpg'} alt="Yanshay Logo" width={100} height={100} className="rounded-full object-contain w-[100px] h-[100px]" />
-            </Link>
-          ) : (
-            <Link href="/" className="text-2xl font-bold text-primary">
-              YANSHAY
-            </Link>
-          )}
+      <div className="container mx-auto flex items-center justify-between p-4 flex-wrap">
+        <div className="flex-shrink-0">
+          <Logo />
         </div>
 
         {/* Desktop Menu */}
-                <div className="hidden md:flex items-center gap-6 w-1/3">
-          <SearchBar />
+        <div className="hidden md:flex flex-grow justify-center px-8">
+          <div className="w-full max-w-md">
+            <SearchBar />
+          </div>
         </div>
-        <div className="hidden md:flex items-center gap-6">
+
+        <div className="hidden md:flex items-center gap-6 flex-shrink-0">
           <nav className="flex items-center gap-6">
             {user?.role !== 'admin' && (
               <>
