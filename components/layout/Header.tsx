@@ -20,108 +20,113 @@ const Header = () => {
 
   return (
     <header className="bg-background border-b">
-      <div className="container mx-auto flex items-center justify-between p-4">
-        <div className="flex items-center gap-6">
-          <div className="flex-shrink-0">
+      <div className="container mx-auto p-4">
+        {/* Desktop Header */}
+        <div className="hidden md:flex items-center justify-between">
+          {/* Left Section */}
+          <div className="flex items-center gap-6 w-1/3">
             <Logo />
-          </div>
-          <nav className="hidden md:flex items-center gap-6">
-            {user?.role !== 'admin' && (
-              <>
-                <Link href="/" className="hover:text-primary transition-colors"><Home /></Link>
-                <Link href="/shop" className="hover:text-primary transition-colors"><ShoppingBag /></Link>
-              </>
-            )}
-          </nav>
-        </div>
-
-        <div className="hidden md:flex flex-grow justify-center px-8">
-          <div className="w-full max-w-md">
-            <SearchBar />
-          </div>
-        </div>
-
-        <div className="hidden md:flex items-center gap-4">
-          {user ? (
-            <>
-              {user.role !== 'admin' ? (
-                <>
-                  <Link href="/account" className="hover:text-primary transition-colors"><User /></Link>
-                  <Link href="/cart" className="relative hover:text-primary transition-colors">
-                    <ShoppingCart />
-                    <CartCount />
-                  </Link>
-                </>
-              ) : (
-                <Button onClick={signOut} variant="destructive">Logout</Button>
-              )}
-            </>
-          ) : (
-            <>
-              <Link href="/login" className="hover:text-primary transition-colors">Login</Link>
-              <Link href="/cart" className="relative hover:text-primary transition-colors">
-                <ShoppingCart />
-                <CartCount />
-              </Link>
-            </>
-          )}
-          <ThemeToggle />
-        </div>
-
-        {/* Mobile Menu Button */}
-        <div className="flex items-center md:hidden">
-          <ThemeToggle />
-          <Button variant="ghost" size="icon" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-            {isMenuOpen ? <X /> : <Menu />}
-          </Button>
-        </div>
-
-        {/* Mobile Menu */}
-                {/* Mobile Search Bar */}
-        <div className="md:hidden flex items-center w-full pt-4">
-          <SearchBar />
-        </div>
-
-        {isMenuOpen && (
-          <div className="absolute top-16 left-0 w-full bg-background border-b md:hidden flex flex-col items-center gap-4 p-4">
-            <nav className="flex flex-col items-center gap-4">
+            <nav className="flex items-center gap-4">
               {user?.role !== 'admin' && (
                 <>
-                  <Link href="/" className="hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}><Home /></Link>
-                  <Link href="/shop" className="hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}><ShoppingBag /></Link>
+                  <Link href="/" className="hover:text-primary transition-colors"><Home /></Link>
+                  <Link href="/shop" className="hover:text-primary transition-colors"><ShoppingBag /></Link>
                 </>
               )}
             </nav>
-            <div className="flex flex-col items-center gap-4">
-              {user ? (
-                <>
-                  {user.role !== 'admin' ? (
-                    <div className="flex flex-col items-center gap-4">
-                      <div className="flex items-center gap-4">
-                        <Link href="/account" className="hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}><User /></Link>
-                        <Link href="/cart" className="relative hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>
-                          <ShoppingCart />
-                          <CartCount />
-                        </Link>
-                      </div>
-                      <Button onClick={() => { signOut(); setIsMenuOpen(false); }} variant="destructive">Logout</Button>
-                    </div>
-                  ) : (
-                    <Button onClick={() => { signOut(); setIsMenuOpen(false); }} variant="destructive">Logout</Button>
-                  )}
-                </>
-              ) : (
-                <div className="flex flex-col items-center gap-4">
-                  <Link href="/login" className="hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>Login</Link>
-                  <Link href="/cart" className="relative hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>
-                    <ShoppingCart />
-                    <CartCount />
-                  </Link>
-                </div>
-              )}
+          </div>
+
+          {/* Center Section */}
+          <div className="w-1/3 flex justify-center">
+            <div className="w-full max-w-sm">
+              <SearchBar />
             </div>
           </div>
-        )}
+
+          {/* Right Section */}
+          <div className="w-1/3 flex justify-end items-center gap-4">
+            {user ? (
+              <>
+                {user.role !== 'admin' ? (
+                  <>
+                    <Link href="/account" className="hover:text-primary transition-colors"><User /></Link>
+                    <Link href="/cart" className="relative hover:text-primary transition-colors">
+                      <ShoppingCart />
+                      <CartCount />
+                    </Link>
+                  </>
+                ) : (
+                  <Button onClick={signOut} variant="destructive">Logout</Button>
+                )}
+              </>
+            ) : (
+              <>
+                <Link href="/login" className="flex items-center hover:text-primary transition-colors">Login</Link>
+                <Link href="/cart" className="relative hover:text-primary transition-colors">
+                  <ShoppingCart />
+                  <CartCount />
+                </Link>
+              </>
+            )}
+            <ThemeToggle />
+          </div>
+        </div>
+
+        {/* Mobile Header */}
+        <div className="md:hidden">
+          <div className="flex items-center justify-between">
+            <Logo />
+            <div className="flex items-center">
+              <ThemeToggle />
+              <Button variant="ghost" size="icon" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                {isMenuOpen ? <X /> : <Menu />}
+              </Button>
+            </div>
+          </div>
+          <div className="mt-4">
+            <SearchBar />
+          </div>
+          {isMenuOpen && (
+            <div className="absolute top-20 left-0 w-full bg-background border-b flex flex-col items-center gap-4 p-4 z-50">
+              <nav className="flex flex-col items-center gap-4">
+                {user?.role !== 'admin' && (
+                  <>
+                    <Link href="/" className="hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}><Home /></Link>
+                    <Link href="/shop" className="hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}><ShoppingBag /></Link>
+                  </>
+                )}
+              </nav>
+              <div className="flex flex-col items-center gap-4">
+                {user ? (
+                  <>
+                    {user.role !== 'admin' ? (
+                      <div className="flex flex-col items-center gap-4">
+                        <div className="flex items-center gap-4">
+                          <Link href="/account" className="hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}><User /></Link>
+                          <Link href="/cart" className="relative hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>
+                            <ShoppingCart />
+                            <CartCount />
+                          </Link>
+                        </div>
+                        <Button onClick={() => { signOut(); setIsMenuOpen(false); }} variant="destructive">Logout</Button>
+                      </div>
+                    ) : (
+                      <Button onClick={() => { signOut(); setIsMenuOpen(false); }} variant="destructive">Logout</Button>
+                    )}
+                  </>
+                ) : (
+                  <div className="flex flex-col items-center gap-4">
+                    <Link href="/login" className="hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>Login</Link>
+                    <Link href="/cart" className="relative hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>
+                      <ShoppingCart />
+                      <CartCount />
+                    </Link>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </header>
   );
