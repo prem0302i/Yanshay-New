@@ -36,7 +36,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session?.user) {
         const { data: userProfile } = await supabase
-          .from('profiles')
+          .from('users')
           .select('*')
           .eq('id', session.user.id)
           .single();
@@ -58,7 +58,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
         if (session?.user) {
           const { data: userProfile, error: profileError } = await supabase
-            .from('profiles')
+            .from('users')
             .select('*')
             .eq('id', session.user.id)
             .single();
@@ -81,7 +81,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setSession(session);
       if (event === 'SIGNED_IN' && session?.user) {
         const { data: userProfile, error: profileError } = await supabase
-          .from('profiles')
+          .from('users')
           .select('*')
           .eq('id', session.user.id)
           .single();
@@ -94,7 +94,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         } else if (profileError) {
           // Profile doesn't exist, create it
           const { data: newProfile, error: createError } = await supabase
-            .from('profiles')
+            .from('users')
             .insert({ 
               id: session.user.id, 
               full_name: session.user.user_metadata.full_name,

@@ -26,7 +26,7 @@ export async function DELETE(request: Request) {
     }
 
     // Delete from profiles
-    const { error: profileError } = await supabaseAdmin.from('profiles').delete().eq('id', id);
+    const { error: profileError } = await supabaseAdmin.from('users').delete().eq('id', id);
     if (profileError) {
       console.error('Error deleting user profile:', profileError.message);
       // Not returning error here in case profile doesn't exist

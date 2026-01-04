@@ -9,8 +9,9 @@ import { useTheme } from 'next-themes';
 
 const ThemeToggle = dynamic(() => import('@/components/ui/ThemeToggle'), { ssr: false });
 import { Button } from '@/components/ui/button';
-import { Menu, X, ShoppingCart, User } from 'lucide-react';
+import { Menu, X, ShoppingCart, User, Home, ShoppingBag } from 'lucide-react';
 import CartCount from './CartCount';
+import { SearchBar } from '@/components/SearchBar';
 
 const Header = () => {
   const { user, signOut } = useAuth();
@@ -19,7 +20,7 @@ const Header = () => {
 
   return (
     <header className="bg-background border-b">
-      <div className="container mx-auto flex justify-between items-center p-4">
+      <div className="container mx-auto flex justify-between items-center p-4 flex-wrap">
         <div className={user?.role === 'admin' ? '-ml-4' : ''}>
           {user?.role === 'admin' ? (
             <Link href="/admin">
@@ -33,12 +34,15 @@ const Header = () => {
         </div>
 
         {/* Desktop Menu */}
+                <div className="hidden md:flex items-center gap-6 w-1/3">
+          <SearchBar />
+        </div>
         <div className="hidden md:flex items-center gap-6">
           <nav className="flex items-center gap-6">
             {user?.role !== 'admin' && (
               <>
-                <Link href="/" className="hover:text-primary transition-colors">Home</Link>
-                <Link href="/shop" className="hover:text-primary transition-colors">Shop</Link>
+                <Link href="/" className="hover:text-primary transition-colors"><Home /></Link>
+                <Link href="/shop" className="hover:text-primary transition-colors"><ShoppingBag /></Link>
               </>
             )}
           </nav>
@@ -79,13 +83,18 @@ const Header = () => {
         </div>
 
         {/* Mobile Menu */}
+                {/* Mobile Search Bar */}
+        <div className="md:hidden flex items-center w-full pt-4">
+          <SearchBar />
+        </div>
+
         {isMenuOpen && (
           <div className="absolute top-16 left-0 w-full bg-background border-b md:hidden flex flex-col items-center gap-4 p-4">
             <nav className="flex flex-col items-center gap-4">
               {user?.role !== 'admin' && (
                 <>
-                  <Link href="/" className="hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>Home</Link>
-                  <Link href="/shop" className="hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>Shop</Link>
+                  <Link href="/" className="hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}><Home /></Link>
+                  <Link href="/shop" className="hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}><ShoppingBag /></Link>
                 </>
               )}
             </nav>

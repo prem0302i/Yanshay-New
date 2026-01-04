@@ -109,6 +109,19 @@ export const updateProduct = async (id: string, updates: any) => {
   return productData;
 };
 
+export const searchProducts = async (query: string) => {
+  const { data, error } = await supabase
+    .from('products')
+    .select('*, variants:product_variants (*)')
+    .ilike('name', `%${query}%`);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data;
+};
+
 export const deleteProduct = async (id: string) => {
   // First, get all variants associated with the product
   const { data: variants, error: variantsError } = await supabase
