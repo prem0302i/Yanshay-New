@@ -37,8 +37,6 @@ const Header = () => {
               <>
                 <Link href="/" className="hover:text-primary transition-colors">Home</Link>
                 <Link href="/shop" className="hover:text-primary transition-colors">Shop</Link>
-                <Link href="/contact" className="hover:text-primary transition-colors">Contact</Link>
-                <Link href="/about" className="hover:text-primary transition-colors">About</Link>
               </>
             )}
           </nav>
@@ -47,11 +45,11 @@ const Header = () => {
               <>
                 {user.role !== 'admin' ? (
                   <>
+                    <Link href="/account" className="hover:text-primary transition-colors"><User /></Link>
                     <Link href="/cart" className="relative hover:text-primary transition-colors">
                       <ShoppingCart />
                       <CartCount />
                     </Link>
-                    <Link href="/account" className="hover:text-primary transition-colors"><User /></Link>
                   </>
                 ) : (
                   <Button onClick={signOut} variant="destructive">Logout</Button>
@@ -60,7 +58,10 @@ const Header = () => {
             ) : (
               <>
                 <Link href="/login" className="hover:text-primary transition-colors">Login</Link>
-                <Link href="/signup" className="hover:text-primary transition-colors">Sign Up</Link>
+                <Link href="/cart" className="relative hover:text-primary transition-colors">
+                  <ShoppingCart />
+                  <CartCount />
+                </Link>
               </>
             )}
             <ThemeToggle />
@@ -83,8 +84,6 @@ const Header = () => {
                 <>
                   <Link href="/" className="hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>Home</Link>
                   <Link href="/shop" className="hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>Shop</Link>
-                  <Link href="/contact" className="hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>Contact</Link>
-                  <Link href="/about" className="hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>About</Link>
                 </>
               )}
             </nav>
@@ -92,22 +91,28 @@ const Header = () => {
               {user ? (
                 <>
                   {user.role !== 'admin' ? (
-                    <div className="flex items-center gap-4">
-                      <Link href="/cart" className="relative hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>
-                        <ShoppingCart />
-                        <CartCount />
-                      </Link>
-                      <Link href="/account" className="hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}><User /></Link>
+                    <div className="flex flex-col items-center gap-4">
+                      <div className="flex items-center gap-4">
+                        <Link href="/account" className="hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}><User /></Link>
+                        <Link href="/cart" className="relative hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>
+                          <ShoppingCart />
+                          <CartCount />
+                        </Link>
+                      </div>
+                      <Button onClick={() => { signOut(); setIsMenuOpen(false); }} variant="destructive">Logout</Button>
                     </div>
                   ) : (
                     <Button onClick={() => { signOut(); setIsMenuOpen(false); }} variant="destructive">Logout</Button>
                   )}
                 </>
               ) : (
-                <>
+                <div className="flex flex-col items-center gap-4">
                   <Link href="/login" className="hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>Login</Link>
-                  <Link href="/signup" className="hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>Sign Up</Link>
-                </>
+                  <Link href="/cart" className="relative hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>
+                    <ShoppingCart />
+                    <CartCount />
+                  </Link>
+                </div>
               )}
             </div>
           </div>
