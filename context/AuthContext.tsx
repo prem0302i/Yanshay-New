@@ -1,20 +1,16 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { supabase } from '@/lib/supabase';
 import { Session, User } from '@supabase/supabase-js';
 import { addToCart } from '@/services/cart.service';
 
-// Define the user profile with an optional role
-interface UserProfile extends User {
-  role?: string;
-  full_name?: string;
-}
+import { UserProfile } from '@/types/product';
 
 // Define the shape of the Auth context
 interface AuthContextType {
-  user: UserProfile | null;
+  user: (User & UserProfile) | null;
   session: Session | null;
   loading: boolean;
   signOut: () => Promise<void>;
@@ -26,7 +22,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 // Create the Auth provider component
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<UserProfile | null>(null);
+  const [user, setUser] = useState<(User & UserProfile) | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
@@ -48,6 +44,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       console.error('Error refreshing user:', error);
     }
   };
+
+  const routerRef = React.useRef(router);
+  routerRef.current = router;
 
   useEffect(() => {
     const fetchSessionAndProfile = async () => {
@@ -78,6 +77,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     fetchSessionAndProfile();
 
     const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION') {
+        setLoading(true);
+      }
+      
       setSession(session);
       if (event === 'SIGNED_IN' && session?.user) {
         const { data: userProfile, error: profileError } = await supabase
@@ -90,7 +93,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           const fullUser = { ...session.user, ...userProfile };
           setUser(fullUser);
           const targetUrl = fullUser.role === 'admin' ? '/admin' : '/';
-          window.location.href = targetUrl;
+          routerRef.current.push(targetUrl);
         } else if (profileError) {
           // Profile doesn't exist, create it
           const { data: newProfile, error: createError } = await supabase
@@ -106,7 +109,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           if (newProfile) {
             const fullUser = { ...session.user, ...newProfile };
             setUser(fullUser);
-            window.location.href = '/'; // Redirect to home after profile creation
+            routerRef.current.push('/'); 
           } else {
             console.error('Error creating profile:', createError);
             await supabase.auth.signOut();
@@ -127,7 +130,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     await supabase.auth.signOut();
     setUser(null);
     setSession(null);
-    window.location.href = '/';
+    router.push('/');
   };
 
   const value = {

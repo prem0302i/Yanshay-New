@@ -1,63 +1,23 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import * as React from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
-import { useTheme } from 'next-themes';
-import { useAuth } from '@/context/AuthContext';
 
 const Logo = () => {
-  const { user } = useAuth();
-  const { theme, systemTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  const currentTheme = theme === 'system' ? systemTheme : theme;
-  const logoSrc = currentTheme === 'dark' ? '/dark.jpeg' : '/yanshay-logo.jpg';
-  const fallbackSrc = '/yanshay-logo.jpg';
-
-  const [imgSrc, setImgSrc] = useState(logoSrc);
-
-  useEffect(() => {
-    setImgSrc(logoSrc);
-  }, [logoSrc, currentTheme]);
-
-  if (!mounted) {
-    return <div className="w-[150px] h-[40px]" />;
-  }
-
-  const isAdmin = user?.role === 'admin';
-
-  if (isAdmin) {
-    return (
-      <Link href="/admin">
-        <Image 
-          src={imgSrc}
-          alt="Yanshay Logo" 
-          width={100} 
-          height={100} 
-          className="object-contain w-[100px] h-[100px]" 
-          onError={() => setImgSrc(fallbackSrc)}
-        />
-      </Link>
-    );
-  }
-
   return (
-    <Link href="/" className="flex items-center gap-2 text-2xl font-bold text-primary flex-shrink-0">
-      <div className="relative w-8 h-8">
-        <Image 
-          src={imgSrc}
-          alt="Yanshay Logo" 
-          layout="fill"
-          className="object-contain"
-          onError={() => setImgSrc(fallbackSrc)}
-        />
+    <Link href="/" className="group flex flex-col items-center justify-center select-none">
+      <div className="flex items-center gap-1.5 translate-y-2 group-hover:translate-y-0 transition-transform duration-500 ease-out">
+        <span className="text-2xl md:text-3xl font-display font-medium tracking-[0.4em] text-foreground leading-none">
+          YANSHAY
+        </span>
+        <div className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse shadow-[0_0_10px_rgba(250,204,21,0.5)]" />
       </div>
-      <span>YANSHAY<span className="text-sm text-yellow-500">.ofc</span></span>
+      <div className="h-[1px] w-0 bg-primary/40 group-hover:w-full transition-all duration-700 ease-out overflow-hidden">
+        <div className="w-full h-full bg-primary" />
+      </div>
+      <span className="text-[7px] tracking-[0.6em] text-muted-foreground uppercase opacity-0 group-hover:opacity-100 transition-opacity duration-300 translate-y-1">
+        Modern Atelier
+      </span>
     </Link>
   );
 };

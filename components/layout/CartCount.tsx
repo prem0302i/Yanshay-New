@@ -27,8 +27,10 @@ const CartCount = () => {
     return () => window.removeEventListener('cartUpdated', fetchCartCount);
   }, [fetchCartCount]);
 
+  if (cartCount === 0) return null;
+
   return (
-    <div className="absolute -top-2 -right-2 bg-primary text-primary-foreground rounded-full h-5 w-5 flex items-center justify-center text-xs">
+    <div className="absolute -top-1 -right-1 bg-primary text-black font-sans font-bold h-4 w-4 min-w-[16px] flex items-center justify-center text-[9px] shadow-[0_0_10px_rgba(250,232,152,0.4)]">
       {cartCount}
     </div>
   );

@@ -25,7 +25,7 @@ const ProductDetailPage = async ({ params }: { params: { id: string } }) => {
   const product = await getProduct(params.id);
 
   return (
-    <div className="container mx-auto py-16">
+    <div className="container mx-auto py-16 pt-32">
       <ProductDetails product={product} />
     </div>
   );

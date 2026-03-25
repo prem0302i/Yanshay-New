@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import { getOrders, updateOrderStatus } from '@/services/order.service';
+import { supabase } from '@/lib/supabase';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
@@ -15,11 +16,21 @@ const AdminOrdersPage = () => {
 
   React.useEffect(() => {
     fetchOrders();
+
+    const channel = supabase
+      .channel('orders-admin')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, (payload) => {
+        fetchOrders();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const handleStatusChange = async (orderId: string, newStatus: string) => {
     await updateOrderStatus(orderId, newStatus);
-    fetchOrders(); // Refresh the list
   };
 
   return (

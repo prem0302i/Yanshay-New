@@ -4,6 +4,7 @@ export const dynamic = 'force-dynamic';
 
 import * as React from 'react';
 import { getUsers, deleteUser } from '@/services/user.service';
+import { supabase } from '@/lib/supabase';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 
@@ -17,13 +18,23 @@ const AdminUsersPage = () => {
 
   React.useEffect(() => {
     fetchUsers();
+
+    const channel = supabase
+      .channel('users-admin')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'users' }, (payload) => {
+        fetchUsers();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [fetchUsers]);
 
   const handleDelete = async (userId: string) => {
     if (window.confirm('Are you sure you want to delete this user?')) {
       try {
         await deleteUser(userId);
-        fetchUsers(); // Refresh the user list
       } catch (error) {
         console.error('Failed to delete user:', error);
         alert('Failed to delete user.');

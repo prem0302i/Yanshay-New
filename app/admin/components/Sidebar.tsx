@@ -12,6 +12,7 @@ const Sidebar = () => {
           <li><Link href="/admin/products" className="block p-4 hover:bg-gray-200 dark:hover:bg-gray-800">Products</Link></li>
           <li><Link href="/admin/orders" className="block p-4 hover:bg-gray-200 dark:hover:bg-gray-800">Orders</Link></li>
           <li><Link href="/admin/users" className="block p-4 hover:bg-gray-200 dark:hover:bg-gray-800">Users</Link></li>
+          <li><Link href="/admin/categories" className="block p-4 hover:bg-gray-200 dark:hover:bg-gray-800">Categories</Link></li>
         </ul>
       </nav>
     </aside>

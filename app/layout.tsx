@@ -1,6 +1,19 @@
 import './globals.css';
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { Epilogue, Manrope } from 'next/font/google';
+
+const epilogue = Epilogue({ 
+  subsets: ['latin'],
+  variable: '--font-epilogue',
+  display: 'swap',
+});
+
+const manrope = Manrope({ 
+  subsets: ['latin'],
+  variable: '--font-manrope',
+  display: 'swap',
+});
+
 import { ThemeProvider } from '@/components/theme-provider';
 import { AuthProvider } from '@/context/AuthContext';
 import Header from '@/components/layout/Header';
@@ -8,8 +21,6 @@ import ConditionalFooter from '@/components/layout/ConditionalFooter';
 import PageWrapper from '@/components/layout/PageWrapper';
 import { Toaster } from '@/components/ui/sonner';
 import ErrorBoundary from '@/components/ErrorBoundary';
-
-const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: {
@@ -28,7 +39,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head></head>
-      <body className={`${inter.className} bg-background text-foreground`}>
+      <body className={`${manrope.variable} ${epilogue.variable} font-sans bg-background text-foreground`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

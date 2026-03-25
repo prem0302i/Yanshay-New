@@ -2,33 +2,70 @@
 
 import * as React from 'react';
 import { useTheme } from 'next-themes';
-import { motion } from 'framer-motion';
-import { Sun, Moon } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Sun, Moon, Sparkles } from 'lucide-react';
 
 const ThemeToggle = () => {
   const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = React.useState(false);
 
-  const toggleTheme = () => {
-    setTheme(theme === 'light' ? 'dark' : 'light');
-  };
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return <div className="w-14 h-7" />;
+
+  const isDark = theme === 'dark';
 
   return (
-    <motion.button
-      onClick={toggleTheme}
-      className="w-12 h-6 rounded-full p-1 flex items-center"
-      initial={false}
-      animate={{ backgroundColor: theme === 'light' ? '#d1d5db' : '#374151' }}
-      transition={{ duration: 0.3 }}
+    <button
+      onClick={() => setTheme(isDark ? 'light' : 'dark')}
+      className="relative w-14 h-7 rounded-full bg-[#111] border border-white/10 p-1 flex items-center transition-all duration-500 hover:border-primary/50 group overflow-hidden"
+      aria-label="Toggle Theme"
     >
       <motion.div
-        className="w-5 h-5 bg-white rounded-full shadow-md"
-        layout
-        transition={{ type: 'spring', stiffness: 700, damping: 30 }}
-        style={{ x: theme === 'light' ? 0 : 20 }}
+        className="absolute inset-0 bg-gradient-to-r from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"
+      />
+      
+      <motion.div
+        className="relative z-10 w-5 h-5 rounded-full bg-primary flex items-center justify-center shadow-[0_0_15px_rgba(250,229,21,0.3)]"
+        animate={{ 
+          x: isDark ? 28 : 0,
+        }}
+        transition={{ type: 'spring', stiffness: 500, damping: 30 }}
       >
-        {theme === 'light' ? <Sun className="w-full h-full p-1 text-yellow-500" /> : <Moon className="w-full h-full p-1 text-blue-500" />}
+        <AnimatePresence mode="wait">
+          {isDark ? (
+            <motion.div
+              key="moon"
+              initial={{ scale: 0, rotate: -90 }}
+              animate={{ scale: 1, rotate: 0 }}
+              exit={{ scale: 0, rotate: 90 }}
+              transition={{ duration: 0.2 }}
+            >
+              <Moon size={10} className="text-black fill-black" />
+            </motion.div>
+          ) : (
+            <motion.div
+              key="sun"
+              initial={{ scale: 0, rotate: 90 }}
+              animate={{ scale: 1, rotate: 0 }}
+              exit={{ scale: 0, rotate: -90 }}
+              transition={{ duration: 0.2 }}
+            >
+              <Sun size={10} className="text-black fill-black" />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </motion.div>
-    </motion.button>
+
+      <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
+        <Sparkles size={10} className={`text-primary/20 transition-opacity duration-500 ${isDark ? 'opacity-0' : 'opacity-100'}`} />
+      </div>
+      <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+        <Sparkles size={10} className={`text-primary/20 transition-opacity duration-500 ${isDark ? 'opacity-100' : 'opacity-0'}`} />
+      </div>
+    </button>
   );
 };
 
