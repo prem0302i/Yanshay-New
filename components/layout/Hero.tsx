@@ -30,7 +30,7 @@ const Hero = () => {
             <span className="text-primary italic">Signature</span> Style
           </h1>
           <p className="max-w-xl mx-auto text-lg md:text-xl text-muted-foreground mb-12 font-sans font-light leading-relaxed">
-            Experience the digital atelier. Create, customize, and wear your identity with our premium quality fabrics and cutting-edge design tools.
+            Create, customize, and wear your own style with premium quality fabrics and easy-to-use design tools.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Button 

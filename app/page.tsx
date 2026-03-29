@@ -41,13 +41,13 @@ const HomePage = () => {
            />
            <CategoryCard 
              title="The Performance"
-             description="Durable, high-thread apparel designed for the architectural grind."
+             description="Durable, high-quality apparel built for everyday performance."
              image="https://images.unsplash.com/photo-1562157705-10c3451ea1a6?auto=format&fit=crop&q=80"
              href="/shop?category=formal"
            />
            <CategoryCard 
              title="Tailored Custom"
-             description="Your blueprint, our craft. Personalized garments at scale."
+             description="Your design, our craft. Custom-made garments just for you."
              image="https://images.unsplash.com/photo-1583743814966-893bee5b505b?auto=format&fit=crop&q=80"
              href="/customize"
              accent
@@ -59,20 +59,20 @@ const HomePage = () => {
           <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-primary/5 to-transparent pointer-events-none" />
           
           <div className="flex-1 space-y-8 relative z-10">
-            <span className="text-primary text-[10px] tracking-[0.4em] font-sans font-bold uppercase block">Interactive Atelier</span>
+            <span className="text-primary text-[10px] tracking-[0.4em] font-sans font-bold uppercase block">Design Studio</span>
             <h2 className="text-5xl md:text-7xl font-display font-medium leading-none tracking-tighter uppercase max-w-xl">
-              Blueprint <br /> Your <span className="text-primary italic">Identity</span>
+              Design <br /> Your <span className="text-primary italic">Style</span>
             </h2>
             <p className="text-muted-foreground text-lg max-w-md font-sans">
-              Access our full precision customization platform. Mix colors, placements, and graphics with instant visual feedback.
+              Use our easy customization tools to pick your colors, designs, and graphics — see your changes instantly.
             </p>
             <div className="flex flex-wrap gap-12 pt-4">
-              <FeatureItem icon={<Palette size={18} />} label="Vibrant Palettes" />
-              <FeatureItem icon={<Shirt size={18} />} label="Premium Canvas" />
-              <FeatureItem icon={<Zap size={18} />} label="Rapid Print" />
+              <FeatureItem icon={<Palette size={18} />} label="Vibrant Colors" />
+              <FeatureItem icon={<Shirt size={18} />} label="Quality Fabrics" />
+              <FeatureItem icon={<Zap size={18} />} label="Fast Delivery" />
             </div>
-            <Button size="lg" className="h-14 px-10 tracking-[0.2em] uppercase font-bold text-xs" onClick={() => (window.location.href = '/customize')}>
-              Launch Customizer
+            <Button size="lg" className="h-14 px-10 tracking-[0.2em] uppercase font-bold text-xs" onClick={() => { window.location.href = '/customize' }}>
+              Start Designing
             </Button>
           </div>
 
@@ -96,20 +96,20 @@ const HomePage = () => {
 };
 
 const CategoryCard = ({ title, description, image, href, accent = false }: { title: string; description: string; image: string; href: string; accent?: boolean }) => (
-  <Link href={href} className="group relative block aspect-[4/5] overflow-hidden bg-card">
+  <Link href={href} className="group relative block aspect-[4/5] overflow-hidden bg-card border border-white/5">
     <img 
       src={image} 
       alt={title} 
-      className="absolute inset-0 w-full h-full object-cover grayscale opacity-60 transition-all duration-700 group-hover:scale-110 group-hover:grayscale-0 group-hover:opacity-80"
+      className="absolute inset-0 w-full h-full object-cover grayscale opacity-40 transition-all duration-700 group-hover:scale-110 group-hover:grayscale-0 group-hover:opacity-70"
     />
-    <div className={`absolute inset-0 p-8 flex flex-col justify-end ${accent ? 'bg-gradient-to-t from-primary/20 via-transparent to-transparent' : 'bg-gradient-to-t from-black/80 via-transparent to-transparent'}`}>
+    <div className={`absolute inset-0 p-10 flex flex-col justify-end ${accent ? 'bg-gradient-to-t from-primary/20 via-transparent to-transparent' : 'bg-gradient-to-t from-background/90 via-transparent to-transparent'}`}>
       <h3 className="text-3xl font-display uppercase tracking-tighter mb-2 translate-y-4 transition-transform duration-500 group-hover:translate-y-0">
         {title}
       </h3>
-      <p className="text-[11px] tracking-widest text-muted-foreground uppercase opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100 mb-6">
+      <p className="text-[10px] tracking-[0.3em] text-muted-foreground uppercase opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100 mb-8 max-w-xs">
         {description}
       </p>
-      <div className="w-10 h-[1px] bg-primary group-hover:w-full transition-all duration-700" />
+      <div className="w-12 h-[1px] bg-primary/40 group-hover:w-full transition-all duration-700" />
     </div>
   </Link>
 );

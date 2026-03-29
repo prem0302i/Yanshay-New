@@ -16,7 +16,7 @@ const manrope = Manrope({
 
 import { ThemeProvider } from '@/components/theme-provider';
 import { AuthProvider } from '@/context/AuthContext';
-import Header from '@/components/layout/Header';
+import ConditionalHeader from '@/components/layout/ConditionalHeader';
 import ConditionalFooter from '@/components/layout/ConditionalFooter';
 import PageWrapper from '@/components/layout/PageWrapper';
 import { Toaster } from '@/components/ui/sonner';
@@ -47,7 +47,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <AuthProvider>
-            <Header />
+            <ConditionalHeader />
             <main>
               <ErrorBoundary>
               <PageWrapper>{children}</PageWrapper>

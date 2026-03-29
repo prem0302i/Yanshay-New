@@ -86,7 +86,7 @@ const CartPage = () => {
     router.push(user ? '/checkout' : '/login?redirect=/checkout');
   };
 
-  if (isLoading) return <div className="min-h-screen bg-background flex items-center justify-center tracking-[0.5em] uppercase text-[10px] animate-pulse">Synchronizing...</div>;
+  if (isLoading) return <div className="min-h-screen bg-background flex items-center justify-center tracking-[0.5em] uppercase text-[10px] animate-pulse">Loading...</div>;
 
   return (
     <div className="bg-background min-h-screen pt-24 pb-20">
@@ -194,7 +194,7 @@ const CartPage = () => {
                    </div>
                    <div className="flex justify-between items-center text-[10px] tracking-[0.2em] uppercase text-muted-foreground">
                       <span>Shipping</span>
-                      <span className="text-primary font-bold">Complimentary</span>
+                      <span className="text-primary font-bold">Free</span>
                    </div>
                    <div className="pt-6 border-t border-white/5 flex justify-between items-end">
                       <span className="text-xs tracking-[0.2em] uppercase font-bold">Total</span>

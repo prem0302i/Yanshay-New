@@ -8,21 +8,21 @@ const Sidebar = () => {
       <div className="p-8 border-b border-white/5">
         <Link href="/admin" className="block group">
           <span className="text-[10px] tracking-[0.5em] uppercase font-bold text-primary/40 group-hover:text-primary transition-colors">Studio Control</span>
-          <h2 className="text-2xl font-display uppercase tracking-tighter mt-1">Atelier Hub</h2>
+          <h2 className="text-2xl font-display uppercase tracking-tight mt-1">Admin Panel</h2>
         </Link>
       </div>
       <nav className="flex-1 py-10">
         <ul className="space-y-2 px-4">
           <SidebarLink href="/admin" label="Analytics" icon={<div className="w-1.5 h-1.5 bg-primary rounded-full shadow-[0_0_8px_rgba(250,229,21,1)]" />} />
-          <SidebarLink href="/admin/products" label="Collection" />
-          <SidebarLink href="/admin/orders" label="Manifests" />
-          <SidebarLink href="/admin/users" label="Identities" />
-          <SidebarLink href="/admin/categories" label="Architectures" />
+          <SidebarLink href="/admin/products" label="Products" />
+          <SidebarLink href="/admin/orders" label="Orders" />
+          <SidebarLink href="/admin/users" label="Users" />
+          <SidebarLink href="/admin/categories" label="Categories" />
         </ul>
       </nav>
       <div className="p-8 border-t border-white/5">
         <Link href="/" className="text-[10px] tracking-[0.3em] uppercase font-bold text-muted-foreground hover:text-primary transition-colors">
-          Exit to Public Hub
+          Back to Store
         </Link>
       </div>
     </aside>

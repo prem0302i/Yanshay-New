@@ -9,42 +9,70 @@ import Link from 'next/link';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
 import { UserPlus, ArrowRight, Shield } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+
+import { useAuth } from '@/context/AuthContext';
+import * as React from 'react';
 
 const SignupPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
+  const { user } = useAuth();
+
+  // Safeguard: Redirect away if already authenticated
+  React.useEffect(() => {
+    if (user) {
+      const target = user.role === 'admin' ? '/admin' : '/';
+      router.replace(target);
+    }
+  }, [user, router]);
 
   const handleSignup = async () => {
     if (!fullName.trim() || !email.trim() || !password.trim()) {
-      toast.error('Identity Fields Mandatory.', {
-        description: 'All architectural signature fields are required.'
+      toast.error('All fields are required.', {
+        description: 'Please fill in all fields to continue.'
       });
       return;
     }
-    setLoading(true);
-    const { error } = await supabase.auth.signUp({ 
-      email, 
-      password, 
-      options: { 
-        data: { 
-          full_name: fullName,
-          role: 'user'
-        } 
-      } 
-    });
     
-    if (error) {
-      toast.error('Manifestation Failed.', {
-        description: error.message
+    setLoading(true);
+    try {
+      const { data, error } = await supabase.auth.signUp({ 
+        email, 
+        password, 
+        options: { 
+          data: { 
+            full_name: fullName,
+            role: 'user'
+          } 
+        } 
       });
-    } else {
-      toast.success('Manifestation Initiated.', {
-        description: 'Verify your digital signature via email.'
+      
+      if (error) {
+        toast.error('Sign Up Failed.', {
+          description: error.message
+        });
+      } else if (data.user) {
+        toast.success('Account Created!', {
+          description: 'Welcome to Yanshay! Check your email if verification is needed.'
+        });
+        
+        // Brief delay before redirecting to login to allow user to read the message
+        setTimeout(() => {
+          window.location.href = '/login';
+        }, 2000);
+      }
+    } catch (err: any) {
+      console.error('Signup error:', err);
+      toast.error('Something Went Wrong.', {
+        description: err.message || 'An unexpected error occurred.'
       });
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
@@ -52,11 +80,11 @@ const SignupPage = () => {
       <div className="w-full max-w-lg">
         
         <header className="mb-16 text-center">
-           <span className="text-primary text-[10px] tracking-[0.4em] font-sans font-bold uppercase mb-4 block">New Profile Establishment</span>
+           <span className="text-primary text-[10px] tracking-[0.4em] font-sans font-bold uppercase mb-4 block">Join Us</span>
            <h1 className="text-6xl md:text-7xl font-display font-medium leading-[0.9] tracking-tighter uppercase mb-6">
-             Create <br /> <span className="text-primary italic">Identity</span>
+             Sign <br /> <span className="text-primary italic">Up</span>
            </h1>
-           <p className="text-muted-foreground text-sm font-sans font-light tracking-widest uppercase opacity-60">Join the Collective Digital Atelier</p>
+           <p className="text-muted-foreground text-sm font-sans font-light tracking-widest uppercase opacity-60">Create your account to get started</p>
         </header>
 
         <motion.div 
@@ -66,7 +94,7 @@ const SignupPage = () => {
         >
           <div className="space-y-8">
             <div className="space-y-2">
-              <Label className="text-[10px] tracking-[0.4em] font-bold uppercase opacity-60">Full Name / Signature</Label>
+              <Label className="text-[10px] tracking-[0.4em] font-bold uppercase opacity-60">Full Name</Label>
               <Input 
                 id="fullName" 
                 type="text" 
@@ -78,7 +106,7 @@ const SignupPage = () => {
               />
             </div>
             <div className="space-y-2">
-              <Label className="text-[10px] tracking-[0.4em] font-bold uppercase opacity-60">Identity / Email</Label>
+              <Label className="text-[10px] tracking-[0.4em] font-bold uppercase opacity-60">Email</Label>
               <Input 
                 id="email" 
                 type="email" 
@@ -91,7 +119,7 @@ const SignupPage = () => {
               />
             </div>
             <div className="space-y-2">
-              <Label className="text-[10px] tracking-[0.4em] font-bold uppercase opacity-60">Credential / Password</Label>
+              <Label className="text-[10px] tracking-[0.4em] font-bold uppercase opacity-60">Password</Label>
               <Input 
                 id="password" 
                 type="password" 
@@ -119,7 +147,7 @@ const SignupPage = () => {
               )}
             </Button>
             <div className="mt-8 flex items-center justify-center gap-2 text-[9px] tracking-[0.3em] uppercase text-muted-foreground opacity-40">
-               <Shield size={14} /> Encrypted Gateway Secure
+               <Shield size={14} /> Your data is secure
             </div>
           </div>
         </motion.div>
@@ -130,7 +158,7 @@ const SignupPage = () => {
             </p>
            <div className="w-12 h-[1px] bg-white/5 mx-auto" />
            <Link href="/" className="text-[9px] tracking-widest uppercase text-muted-foreground/30 hover:text-muted-foreground transition-all">
-              Return to Public Space
+               Back to Home
            </Link>
         </footer>
       </div>

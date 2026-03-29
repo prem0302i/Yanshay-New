@@ -53,24 +53,24 @@ const AccountPage = () => {
   const handleSaveAddress = async () => {
     if (!user) return;
     if (!address.street_address || !address.city || !address.state || !address.postal_code) {
-      toast.error('Fields missing.');
+      toast.error('Please fill in all required fields.');
       return;
     }
     try {
       await saveUserAddress(user.id, address);
       await refreshUser();
       setIsEditingAddress(false);
-      toast.success('Shipping profile updated.');
+      toast.success('Address saved successfully!');
     } catch (err: any) {
       toast.error(err.message);
     }
   };
 
   const navItems = [
-    { id: 'profile', label: 'Identity', icon: <User size={16} /> },
-    { id: 'address', label: 'Destination', icon: <MapPin size={16} /> },
-    { id: 'orders', label: 'Acquisitions', icon: <Package size={16} /> },
-    { id: 'saved-designs', label: 'Studio Archive', icon: <Palette size={16} /> },
+    { id: 'profile', label: 'Profile', icon: <User size={16} /> },
+    { id: 'address', label: 'Address', icon: <MapPin size={16} /> },
+    { id: 'orders', label: 'Orders', icon: <Package size={16} /> },
+    { id: 'saved-designs', label: 'Saved Designs', icon: <Palette size={16} /> },
   ];
 
   return (
@@ -79,7 +79,7 @@ const AccountPage = () => {
         
         {/* Header Section */}
         <header className="mb-20 text-center">
-           <span className="text-primary text-[10px] tracking-[0.4em] font-sans font-bold uppercase mb-4 block">Archive Management</span>
+           <span className="text-primary text-[10px] tracking-[0.4em] font-sans font-bold uppercase mb-4 block">My Account</span>
            <h1 className="text-5xl md:text-7xl font-display font-medium leading-[0.9] tracking-tighter uppercase mb-6">
              My <br /> <span className="text-primary italic">Account</span>
            </h1>
@@ -117,7 +117,7 @@ const AccountPage = () => {
                  onClick={signOut}
                  className="flex items-center gap-4 text-[10px] tracking-[0.3em] font-bold uppercase text-red-400/60 hover:text-red-400 transition-colors"
                >
-                 <LogOut size={16} /> Terminate Session
+                 <LogOut size={16} /> Log Out
                </button>
             </div>
           </aside>
@@ -135,18 +135,18 @@ const AccountPage = () => {
               {activeSegment === 'profile' && (
                 <section className="space-y-12">
                    <div className="max-w-xl">
-                      <h2 className="text-3xl font-display uppercase tracking-widest mb-2">Core Identity</h2>
-                      <p className="text-muted-foreground text-sm font-sans font-light tracking-widest uppercase opacity-60 mb-10">Registered Personal Credentials</p>
+                      <h2 className="text-3xl font-display uppercase tracking-widest mb-2">My Profile</h2>
+                      <p className="text-muted-foreground text-sm font-sans font-light tracking-widest uppercase opacity-60 mb-10">Your Personal Information</p>
                       
                       {user && (
                         <div className="space-y-12 bg-[#111] p-10">
                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-10">
                               <div className="space-y-2">
-                                 <p className="text-[9px] tracking-[0.4em] font-bold uppercase text-primary/60">Legal Attribution</p>
+                                 <p className="text-[9px] tracking-[0.4em] font-bold uppercase text-primary/60">Full Name</p>
                                  <p className="text-lg font-sans font-medium tracking-tight whitespace-nowrap overflow-hidden text-ellipsis">{user.full_name}</p>
                               </div>
                               <div className="space-y-2">
-                                 <p className="text-[9px] tracking-[0.4em] font-bold uppercase text-primary/60">Digital Signature</p>
+                                 <p className="text-[9px] tracking-[0.4em] font-bold uppercase text-primary/60">Email</p>
                                  <p className="text-lg font-sans font-medium tracking-tight whitespace-nowrap overflow-hidden text-ellipsis">{user.email}</p>
                               </div>
                            </div>
@@ -157,7 +157,7 @@ const AccountPage = () => {
                                 className="h-12 px-8 text-[10px] font-bold tracking-widest uppercase border-primary/20 hover:bg-primary/5"
                                 onClick={() => setIsChangePasswordOpen(true)}
                               >
-                                <Lock size={14} className="mr-2" /> Modify Key
+                                <Lock size={14} className="mr-2" /> Change Password
                               </Button>
                            </div>
                         </div>
@@ -170,13 +170,13 @@ const AccountPage = () => {
               {activeSegment === 'address' && (
                 <section className="space-y-12">
                    <div className="max-w-2xl">
-                      <h2 className="text-3xl font-display uppercase tracking-widest mb-2">Destination</h2>
-                      <p className="text-muted-foreground text-sm font-sans font-light tracking-widest uppercase opacity-60 mb-10">Primary Logistics Coordinates</p>
+                      <h2 className="text-3xl font-display uppercase tracking-widest mb-2">Address</h2>
+                      <p className="text-muted-foreground text-sm font-sans font-light tracking-widest uppercase opacity-60 mb-10">Your Shipping Address</p>
                       
                       {hasAddress && !isEditingAddress ? (
                         <div className="bg-[#111] p-10 border-l-2 border-primary space-y-6">
                            <div className="space-y-2">
-                              <p className="text-[9px] tracking-[0.4em] font-bold uppercase text-primary/60">Coordinates</p>
+                              <p className="text-[9px] tracking-[0.4em] font-bold uppercase text-primary/60">Address</p>
                               <div className="text-lg font-sans font-light leading-relaxed">
                                  {(user as any).street_address}<br />
                                  {(user as any).landmark && <span className="opacity-50">{(user as any).landmark}, </span>}
@@ -189,7 +189,7 @@ const AccountPage = () => {
                              className="h-10 text-[9px] font-bold tracking-widest uppercase border-white/10 hover:border-primary transition-all px-6"
                              onClick={() => setIsEditingAddress(true)}
                            >
-                             Update Logistics
+                             Edit Address
                            </Button>
                         </div>
                       ) : (
@@ -224,7 +224,7 @@ const AccountPage = () => {
                               </div>
                            </div>
                            <div className="flex gap-4 pt-4 border-t border-white/5">
-                              <Button onClick={handleSaveAddress} className="h-12 px-8 text-[10px] font-bold tracking-widest uppercase">Verify Address</Button>
+                              <Button onClick={handleSaveAddress} className="h-12 px-8 text-[10px] font-bold tracking-widest uppercase">Save Address</Button>
                               {hasAddress && (
                                 <Button variant="ghost" onClick={() => setIsEditingAddress(false)} className="text-[10px] tracking-widest uppercase">Cancel</Button>
                               )}
@@ -239,20 +239,20 @@ const AccountPage = () => {
               {activeSegment === 'orders' && (
                 <section className="space-y-12">
                    <div>
-                      <h2 className="text-3xl font-display uppercase tracking-widest mb-2">Acquisitions</h2>
-                      <p className="text-muted-foreground text-sm font-sans font-light tracking-widest uppercase opacity-60 mb-10">Transactional History Manifest</p>
+                      <h2 className="text-3xl font-display uppercase tracking-widest mb-2">Orders</h2>
+                      <p className="text-muted-foreground text-sm font-sans font-light tracking-widest uppercase opacity-60 mb-10">Your Order History</p>
                       
                       <div className="space-y-6">
                         {orders.length === 0 ? (
                           <div className="py-24 text-center border border-dashed border-white/10 px-8">
-                             <p className="text-muted-foreground tracking-widest uppercase text-[10px]">Your acquisition history is currently empty.</p>
-                             <Button variant="ghost" className="mt-6 text-primary uppercase text-[10px] tracking-widest font-bold" onClick={() => (window.location.href = '/shop')}>Explore Vault</Button>
+                             <p className="text-muted-foreground tracking-widest uppercase text-[10px]">You haven't placed any orders yet.</p>
+                             <Button variant="ghost" className="mt-6 text-primary uppercase text-[10px] tracking-widest font-bold" onClick={() => (window.location.href = '/shop')}>Start Shopping</Button>
                           </div>
                         ) : (
                           orders.map((order) => (
                             <div key={order.id} className="bg-[#111] p-8 border border-white/5 hover:border-primary/20 transition-all flex flex-col md:flex-row md:items-center justify-between gap-8 group">
                               <div className="space-y-1">
-                                <p className="text-[9px] tracking-[0.4em] font-bold uppercase text-primary/60">Hash Identifier</p>
+                                <p className="text-[9px] tracking-[0.4em] font-bold uppercase text-primary/60">Order ID</p>
                                 <p className="text-lg font-sans font-medium tracking-tight">#{order.id.toString().slice(0, 12)}</p>
                                 <div className="pt-2 flex items-center gap-4 text-[10px] tracking-widest uppercase text-muted-foreground">
                                    <span>{new Date(order.created_at!).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
@@ -280,9 +280,9 @@ const AccountPage = () => {
                 <section className="space-y-12">
                    <div className="py-32 text-center border border-dashed border-white/10 max-w-2xl">
                       <Palette className="mx-auto mb-6 text-primary/20" size={48} strokeWidth={1} />
-                      <p className="text-muted-foreground tracking-[0.3em] uppercase text-xs mb-8">Studio Archive Locked</p>
+                      <p className="text-muted-foreground tracking-[0.3em] uppercase text-xs mb-8">No Saved Designs Yet</p>
                       <Button onClick={() => (window.location.href = '/customize')} className="h-14 px-10 tracking-[0.3em] uppercase text-xs font-bold">
-                         Access Atelier
+                         Start Designing
                       </Button>
                    </div>
                 </section>

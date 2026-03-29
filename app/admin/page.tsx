@@ -15,15 +15,15 @@ const AdminDashboard = () => {
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatCard label="Total Revenue" value="₹2,45,900" increment="+12.5%" icon={<DollarSign size={20} />} accent />
-        <StatCard label="Acquisitions" value="1,240" increment="+8.2%" icon={<ShoppingBag size={20} />} />
-        <StatCard label="Identities" value="8,420" increment="+5.1%" icon={<Users size={20} />} />
-        <StatCard label="Growth Ratio" value="24%" increment="+2.4%" icon={<TrendingUp size={20} />} />
+        <StatCard label="Orders" value="1,240" increment="+8.2%" icon={<ShoppingBag size={20} />} />
+        <StatCard label="Users" value="8,420" increment="+5.1%" icon={<Users size={20} />} />
+        <StatCard label="Growth Rate" value="24%" increment="+2.4%" icon={<TrendingUp size={20} />} />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Recent Activity */}
         <div className="lg:col-span-2 space-y-6">
-           <SectionHeader title="Recent Manifests" action="View All" />
+           <SectionHeader title="Recent Orders" action="View All" />
            <div className="bg-[#0a0a0a] border border-white/5 divide-y divide-white/5">
               {[1, 2, 3, 4, 5].map(i => (
                 <div key={i} className="flex items-center justify-between p-6 hover:bg-white/[0.01] transition-colors group">
@@ -50,16 +50,16 @@ const AdminDashboard = () => {
               <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 blur-3xl rounded-full" />
               <div className="relative z-10 space-y-8">
                  <div className="space-y-2">
-                    <p className="text-[10px] tracking-[0.3em] font-bold uppercase opacity-40 text-primary">Gateway Uptime</p>
+                    <p className="text-[10px] tracking-[0.3em] font-bold uppercase opacity-40 text-primary">Server Uptime</p>
                     <p className="text-3xl font-display uppercase tracking-tighter text-white">99.9% Reliable</p>
                  </div>
                  <div className="space-y-4">
-                    <StatusItem label="API Node" status="Optimal" />
-                    <StatusItem label="CDN Edge" status="Synchronized" />
+                    <StatusItem label="API" status="Online" />
+                    <StatusItem label="CDN" status="Active" />
                     <StatusItem label="Database" status="Active" />
                  </div>
                  <button className="w-full h-12 bg-white/5 hover:bg-white/10 text-[10px] tracking-[0.2em] font-bold uppercase transition-all flex items-center justify-center gap-2">
-                    Diagnostic Report <ArrowUpRight size={14} />
+                    View Details <ArrowUpRight size={14} />
                  </button>
               </div>
            </div>

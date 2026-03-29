@@ -10,13 +10,13 @@ const Logo = () => {
         <span className="text-2xl md:text-3xl font-display font-medium tracking-[0.4em] text-foreground leading-none">
           YANSHAY
         </span>
-        <div className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse shadow-[0_0_10px_rgba(250,204,21,0.5)]" />
+        <div className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse shadow-[0_0_15px_rgba(255,191,0,0.4)]" />
       </div>
-      <div className="h-[1px] w-0 bg-primary/40 group-hover:w-full transition-all duration-700 ease-out overflow-hidden">
-        <div className="w-full h-full bg-primary" />
+      <div className="h-[1px] w-0 bg-primary/30 group-hover:w-full transition-all duration-700 ease-out overflow-hidden mt-1">
+        <div className="w-full h-full bg-primary/60" />
       </div>
-      <span className="text-[7px] tracking-[0.6em] text-muted-foreground uppercase opacity-0 group-hover:opacity-100 transition-opacity duration-300 translate-y-1">
-        Modern Atelier
+      <span className="text-[7px] tracking-[0.6em] text-muted-foreground uppercase opacity-0 group-hover:opacity-100 transition-opacity duration-300 translate-y-1 mt-1">
+        Digital Collective
       </span>
     </Link>
   );

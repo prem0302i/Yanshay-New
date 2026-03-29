@@ -43,7 +43,7 @@ const ShopPage = () => {
                 Ready To <br /> <span className="text-primary italic">Wear</span>
               </h1>
               <p className="text-muted-foreground text-lg font-sans font-light max-w-md">
-                A selection of architectural basics and seasonal statements, crafted for durability and high-thread precision.
+                A curated selection of quality basics and standout pieces, designed to last and made with care.
               </p>
             </div>
             <div className="flex items-center gap-4">

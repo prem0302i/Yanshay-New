@@ -126,15 +126,15 @@ const Header = () => {
               className="fixed inset-0 top-[60px] bg-background z-40 md:hidden p-8 flex flex-col gap-10 border-r border-primary/10"
             >
               <nav className="flex flex-col gap-8">
-                <Link href="/" onClick={() => setIsMenuOpen(false)} className="text-3xl font-display uppercase tracking-tighter hover:text-primary transition-colors">Atelier Home</Link>
-                <Link href="/shop" onClick={() => setIsMenuOpen(false)} className="text-3xl font-display uppercase tracking-tighter hover:text-primary transition-colors">Ready To Wear</Link>
-                <Link href="/customize" onClick={() => setIsMenuOpen(false)} className="text-3xl font-display uppercase tracking-tighter hover:text-primary transition-colors">Custom Blueprint</Link>
-                <Link href="/account" onClick={() => setIsMenuOpen(false)} className="text-3xl font-display uppercase tracking-tighter hover:text-primary transition-colors">Profile Hub</Link>
+                <Link href="/" onClick={() => setIsMenuOpen(false)} className="text-3xl font-display uppercase tracking-tighter hover:text-primary transition-colors">Home</Link>
+                <Link href="/shop" onClick={() => setIsMenuOpen(false)} className="text-3xl font-display uppercase tracking-tighter hover:text-primary transition-colors">Shop All</Link>
+                <Link href="/customize" onClick={() => setIsMenuOpen(false)} className="text-3xl font-display uppercase tracking-tighter hover:text-primary transition-colors">Customize</Link>
+                <Link href="/account" onClick={() => setIsMenuOpen(false)} className="text-3xl font-display uppercase tracking-tighter hover:text-primary transition-colors">My Account</Link>
                 
                 {!user && (
                    <div className="flex flex-col gap-4 pt-8 border-t border-white/5">
-                      <Link href="/login" onClick={() => setIsMenuOpen(false)} className="text-[11px] tracking-[0.4em] font-bold uppercase text-foreground/40">Authorize Account</Link>
-                      <Link href="/signup" onClick={() => setIsMenuOpen(false)} className="text-[11px] tracking-[0.4em] font-bold uppercase text-primary">Sign Up Now</Link>
+                      <Link href="/login" onClick={() => setIsMenuOpen(false)} className="text-[11px] tracking-[0.4em] font-bold uppercase text-foreground/40">Log In</Link>
+                      <Link href="/signup" onClick={() => setIsMenuOpen(false)} className="text-[11px] tracking-[0.4em] font-bold uppercase text-primary">Sign Up</Link>
                    </div>
                 )}
               </nav>
@@ -144,7 +144,7 @@ const Header = () => {
                   <ThemeToggle />
                   {user && (
                     <button onClick={() => { signOut(); setIsMenuOpen(false); }} className="text-[10px] tracking-[0.4em] uppercase font-bold text-red-400 opacity-60">
-                      Terminate Session
+                      Log Out
                     </button>
                   )}
                 </div>

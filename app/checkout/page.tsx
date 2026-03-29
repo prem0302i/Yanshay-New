@@ -111,7 +111,7 @@ const CheckoutPage = () => {
   const shipping = 0.00;
   const total = subtotal + shipping;
 
-  if (isLoading && cartItems.length === 0) return <div className="min-h-screen bg-background flex items-center justify-center tracking-[0.5em] uppercase text-[10px] animate-pulse">Initializing Secure Checkout...</div>;
+  if (isLoading && cartItems.length === 0) return <div className="min-h-screen bg-background flex items-center justify-center tracking-[0.5em] uppercase text-[10px] animate-pulse">Loading Checkout...</div>;
 
   return (
     <div className="bg-background min-h-screen pt-24 pb-20">
@@ -125,7 +125,7 @@ const CheckoutPage = () => {
           <div className="border-b border-white/5 pb-12">
             <span className="text-primary text-[10px] tracking-[0.4em] font-sans font-bold uppercase mb-4 block">Secure Checkout</span>
             <h1 className="text-5xl md:text-6xl font-display font-medium leading-none tracking-tighter uppercase">
-              Finalize <br /> <span className="text-primary italic">Acquisition</span>
+               Checkout <br /> <span className="text-primary italic">Order</span>
             </h1>
           </div>
         </header>
@@ -139,7 +139,7 @@ const CheckoutPage = () => {
             <section>
                <div className="flex items-center gap-4 mb-10">
                   <div className="w-8 h-8 rounded-full border border-primary flex items-center justify-center text-[10px] font-bold text-primary">01</div>
-                  <h2 className="text-2xl font-display uppercase tracking-tighter">Shipping Destination</h2>
+                  <h2 className="text-2xl font-display uppercase tracking-tighter">Shipping Address</h2>
                </div>
 
                {hasAddress && !isEditing ? (
@@ -152,7 +152,7 @@ const CheckoutPage = () => {
                       {userProfile?.country}
                     </p>
                     <button onClick={() => setIsEditing(true)} className="text-[10px] tracking-widest uppercase font-bold text-primary hover:underline pt-2">
-                       Change Destination
+                       Change Address
                     </button>
                  </motion.div>
                ) : (
@@ -187,7 +187,7 @@ const CheckoutPage = () => {
                        </div>
                     </div>
                     <div className="flex gap-4 pt-4">
-                       <Button onClick={handleSaveAddress} className="h-12 px-8 text-[10px] font-bold tracking-widest uppercase">Verify Destination</Button>
+                       <Button onClick={handleSaveAddress} className="h-12 px-8 text-[10px] font-bold tracking-widest uppercase">Save Address</Button>
                        {hasAddress && <Button variant="ghost" onClick={() => setIsEditing(false)} className="text-[10px] tracking-widest uppercase">Cancel</Button>}
                     </div>
                  </div>
@@ -210,7 +210,7 @@ const CheckoutPage = () => {
                   </div>
                   <div className="p-6 border border-white/5 opacity-50 flex items-center gap-4">
                      <CreditCard />
-                     <span className="text-[11px] tracking-widest uppercase font-bold">Online Payment (Locked)</span>
+                     <span className="text-[11px] tracking-widest uppercase font-bold">Online Payment (Coming Soon)</span>
                   </div>
                </div>
             </section>
@@ -243,8 +243,8 @@ const CheckoutPage = () => {
                       <span className="text-foreground">₹{subtotal.toFixed(2)}</span>
                    </div>
                    <div className="flex justify-between items-center text-[10px] tracking-[0.2em] uppercase text-muted-foreground">
-                      <span>Vault Security</span>
-                      <span className="text-primary font-bold italic">Complimentary</span>
+                      <span>Shipping</span>
+                      <span className="text-primary font-bold italic">Free</span>
                    </div>
                    <div className="pt-6 flex justify-between items-end">
                       <span className="text-xs tracking-[0.2em] uppercase font-bold">Final Total</span>
@@ -262,7 +262,7 @@ const CheckoutPage = () => {
                       Complete Order
                    </Button>
                    <div className="mt-6 flex items-center justify-center gap-2 text-[9px] tracking-[0.2em] uppercase text-muted-foreground opacity-50">
-                      <ShieldCheck size={14} /> End-to-End Encrypted Transaction
+                      <ShieldCheck size={14} /> Safe & Secure Checkout
                    </div>
                 </div>
              </div>

@@ -92,8 +92,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         if (userProfile) {
           const fullUser = { ...session.user, ...userProfile };
           setUser(fullUser);
-          const targetUrl = fullUser.role === 'admin' ? '/admin' : '/';
-          routerRef.current.push(targetUrl);
+          
+          // Only redirect if on auth pages to avoid interrupting active sessions on deep links
+          const currentPath = window.location.pathname;
+          if (currentPath === '/login' || currentPath === '/signup') {
+            const targetUrl = fullUser.role === 'admin' ? '/admin' : '/';
+            routerRef.current.push(targetUrl);
+          }
         } else if (profileError) {
           // Profile doesn't exist, create it
           const { data: newProfile, error: createError } = await supabase
@@ -109,7 +114,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           if (newProfile) {
             const fullUser = { ...session.user, ...newProfile };
             setUser(fullUser);
-            routerRef.current.push('/'); 
+            
+            const currentPath = window.location.pathname;
+            if (currentPath === '/login' || currentPath === '/signup') {
+              routerRef.current.push('/'); 
+            }
           } else {
             console.error('Error creating profile:', createError);
             await supabase.auth.signOut();
