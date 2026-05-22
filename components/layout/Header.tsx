@@ -76,11 +76,11 @@ const Header = () => {
               {!user ? (
                 <>
                   <Link href="/login" className="text-[10px] tracking-[0.3em] font-bold uppercase text-foreground/40 hover:text-primary transition-colors">Login</Link>
-                  <span className="w-[1px] h-3 bg-white/10" />
+                  <span className="w-[1px] h-3 bg-border" />
                   <Link href="/signup" className="text-[10px] tracking-[0.3em] font-bold uppercase text-foreground/40 hover:text-primary transition-colors">Sign Up</Link>
                 </>
               ) : (
-                <Link href="/account" className="group relative p-2 text-foreground/60 hover:text-primary transition-all duration-300">
+                <Link href={user.role === 'admin' ? '/admin' : '/account'} className="group relative p-2 text-foreground/60 hover:text-primary transition-all duration-300">
                   <User size={19} strokeWidth={1.5} className="group-hover:scale-110 transition-transform" />
                   <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/10 rounded-full blur-md transition-all" />
                 </Link>
@@ -129,10 +129,12 @@ const Header = () => {
                 <Link href="/" onClick={() => setIsMenuOpen(false)} className="text-3xl font-display uppercase tracking-tighter hover:text-primary transition-colors">Home</Link>
                 <Link href="/shop" onClick={() => setIsMenuOpen(false)} className="text-3xl font-display uppercase tracking-tighter hover:text-primary transition-colors">Shop All</Link>
                 <Link href="/customize" onClick={() => setIsMenuOpen(false)} className="text-3xl font-display uppercase tracking-tighter hover:text-primary transition-colors">Customize</Link>
-                <Link href="/account" onClick={() => setIsMenuOpen(false)} className="text-3xl font-display uppercase tracking-tighter hover:text-primary transition-colors">My Account</Link>
+                <Link href={user?.role === 'admin' ? '/admin' : '/account'} onClick={() => setIsMenuOpen(false)} className="text-3xl font-display uppercase tracking-tighter hover:text-primary transition-colors">
+                  {user?.role === 'admin' ? 'Admin Dashboard' : 'My Account'}
+                </Link>
                 
                 {!user && (
-                   <div className="flex flex-col gap-4 pt-8 border-t border-white/5">
+                   <div className="flex flex-col gap-4 pt-8 border-t border-border">
                       <Link href="/login" onClick={() => setIsMenuOpen(false)} className="text-[11px] tracking-[0.4em] font-bold uppercase text-foreground/40">Log In</Link>
                       <Link href="/signup" onClick={() => setIsMenuOpen(false)} className="text-[11px] tracking-[0.4em] font-bold uppercase text-primary">Sign Up</Link>
                    </div>

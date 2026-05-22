@@ -14,14 +14,14 @@ export const getOrders = async () => {
   return data;
 };
 
-export const createOrder = async (userId: string, totalAmount: number, shippingAddressId: string, cartItems: any[]) => {
+export const createOrder = async (userId: string, totalAmount: number, shippingAddress: any, cartItems: any[]) => {
   const { data: order, error: orderError } = await supabase
     .from('orders')
     .insert([{
       user_id: userId,
       total_amount: totalAmount,
       final_amount: totalAmount, // Initially, final amount is the same as total
-      shipping_address_id: shippingAddressId,
+      shipping_address: shippingAddress,
       status: 'pending',
     }])
     .select()
@@ -85,19 +85,20 @@ export const updateOrderStatus = async (orderId: string, status: string) => {
     .from('orders')
     .update({ status })
     .eq('id', orderId)
-    .select('*, user_id')
-    .single();
+    .select('*');
 
   if (error) throw error;
+  
+  const updatedOrder = data && data.length > 0 ? data[0] : null;
 
   // If the order is paid, clear the user's cart
-  if (status === 'paid' && data) {
-    const { error: deleteError } = await supabase.from('carts').delete().eq('user_id', data.user_id);
+  if (status === 'paid' && updatedOrder) {
+    const { error: deleteError } = await supabase.from('carts').delete().eq('user_id', updatedOrder.user_id);
     if (deleteError) {
       console.error('Failed to clear cart:', deleteError.message);
       // Don't throw here, as the payment was successful
     }
   }
 
-  return data;
+  return updatedOrder;
 };

@@ -26,6 +26,7 @@ export interface Product {
   video_url: string | null;
   rating: number;
   review_count: number;
+  gender?: string;
   created_at: string;
 }
 

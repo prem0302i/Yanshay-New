@@ -3,7 +3,7 @@ import { Instagram, Youtube, Twitter } from 'lucide-react';
 
 const Footer = () => {
   return (
-    <footer className="bg-background border-t border-white/5 pt-20 pb-10">
+    <footer className="bg-background border-t border-border pt-20 pb-10">
       <div className="container mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-12 mb-20">
           {/* Brand Section */}
@@ -61,7 +61,7 @@ const Footer = () => {
         </div>
 
         {/* Legal & Final Note */}
-        <div className="border-t border-white/5 pt-10 flex flex-col md:flex-row justify-between items-center gap-6">
+        <div className="border-t border-border pt-10 flex flex-col md:flex-row justify-between items-center gap-6">
           <p className="text-[9px] uppercase tracking-[0.4em] text-muted-foreground opacity-40">
             &copy; {new Date().getFullYear()} YANSHAY. ALL RIGHTS RESERVED.
           </p>

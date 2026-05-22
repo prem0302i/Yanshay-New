@@ -28,7 +28,7 @@ const AuthRedirector = ({ children }: { children: React.ReactNode }) => {
   // Using a consistent placeholder to avoid layout shifts
   if (loading || !user || user.role !== 'admin') {
     return (
-      <div className="min-h-screen bg-[#050505] flex flex-col items-center justify-center gap-6 p-6">
+      <div className="min-h-screen bg-card flex flex-col items-center justify-center gap-6 p-6">
         <div className="relative">
           <div className="w-16 h-16 border-[1px] border-primary/10 rounded-full" />
           <div className="absolute inset-0 w-16 h-16 border-t-[1px] border-primary animate-spin rounded-full shadow-[0_0_15px_rgba(255,191,0,0.1)]" />

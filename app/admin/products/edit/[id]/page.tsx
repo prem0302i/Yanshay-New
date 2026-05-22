@@ -17,7 +17,7 @@ const EditProductPage = () => {
       if (id) {
         const { data, error } = await supabase
           .from('products')
-          .select('*')
+          .select('*, variants:product_variants (*), colors:product_colors (*), features:product_features (*), box_items:product_box_items (*), categories:product_categories (category_id, categories(name))')
           .eq('id', id)
           .single();
         if (error) {

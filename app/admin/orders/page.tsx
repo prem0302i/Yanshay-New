@@ -1,10 +1,15 @@
 'use client';
 
 import * as React from 'react';
-import { getOrders, updateOrderStatus } from '@/services/order.service';
+import { getOrders } from '@/services/order.service';
+import { updateOrderStatusAsAdmin } from '@/app/actions/order.actions';
 import { supabase } from '@/lib/supabase';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import Link from 'next/link';
+import { toast } from 'sonner';
+
+export const formatOrderId = (id: any) => 'ORD-' + id.toString().padStart(5, '0');
 
 const AdminOrdersPage = () => {
   const [orders, setOrders] = React.useState<any[]>([]);
@@ -30,7 +35,13 @@ const AdminOrdersPage = () => {
   }, []);
 
   const handleStatusChange = async (orderId: string, newStatus: string) => {
-    await updateOrderStatus(orderId, newStatus);
+    try {
+      await updateOrderStatusAsAdmin(orderId, newStatus);
+      toast.success('Status updated successfully');
+      fetchOrders(); // Refresh local list just in case realtime is slow
+    } catch (err: any) {
+      toast.error('Failed to update status: ' + err.message);
+    }
   };
 
   return (
@@ -47,9 +58,17 @@ const AdminOrdersPage = () => {
         </TableHeader>
         <TableBody>
           {orders.map((order) => (
-            <TableRow key={order.id}>
-              <TableCell>{order.id}</TableCell>
-              <TableCell>{order.users?.full_name}</TableCell>
+            <TableRow key={order.id} className="hover:bg-muted/50 cursor-pointer">
+              <TableCell>
+                <Link href={`/admin/orders/${order.id}`} className="font-mono text-primary font-bold hover:underline">
+                  {formatOrderId(order.id)}
+                </Link>
+              </TableCell>
+              <TableCell>
+                <Link href={`/admin/orders/${order.id}`} className="block w-full">
+                  {order.users?.full_name || 'Guest'}
+                </Link>
+              </TableCell>
               <TableCell>
                 <Select value={order.status} onValueChange={(value) => handleStatusChange(order.id, value)}>
                   <SelectTrigger>
@@ -64,7 +83,11 @@ const AdminOrdersPage = () => {
                   </SelectContent>
                 </Select>
               </TableCell>
-              <TableCell>₹{order.total_amount}</TableCell>
+              <TableCell>
+                <Link href={`/admin/orders/${order.id}`} className="block w-full">
+                  ₹{order.total_amount}
+                </Link>
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>

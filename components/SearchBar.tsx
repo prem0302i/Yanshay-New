@@ -30,7 +30,7 @@ export const SearchBar = ({ onResultClick }: SearchBarProps) => {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search the collection..."
-          className="h-14 pl-12 pr-12 bg-[#111] border-white/5 rounded-none text-sm tracking-widest uppercase focus-visible:ring-1 focus-visible:ring-primary/30 focus-visible:border-primary/50 transition-all"
+          className="h-14 pl-12 pr-12 bg-card border-border rounded-none text-sm tracking-widest uppercase focus-visible:ring-1 focus-visible:ring-primary/30 focus-visible:border-primary/50 transition-all"
           suppressHydrationWarning
         />
         <div className="absolute left-4 top-1/2 -translate-y-1/2 text-primary/40 group-focus-within:text-primary transition-colors">

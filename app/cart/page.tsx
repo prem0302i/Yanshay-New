@@ -93,7 +93,7 @@ const CartPage = () => {
       <div className="container mx-auto px-6">
         
         {/* Page Header */}
-        <header className="mb-16 border-b border-white/5 pb-12">
+        <header className="mb-16 border-b border-border pb-12">
            <span className="text-primary text-[10px] tracking-[0.4em] font-sans font-bold uppercase mb-4 block">Your Selection</span>
            <h1 className="text-5xl md:text-6xl font-display font-medium leading-none tracking-tighter uppercase mb-6">
              Shopping <br /> <span className="text-primary italic">Bag</span>
@@ -109,7 +109,7 @@ const CartPage = () => {
                 <motion.div 
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  className="flex flex-col items-center justify-center text-center py-32 border border-dashed border-white/10"
+                  className="flex flex-col items-center justify-center text-center py-32 border border-dashed border-border"
                 >
                   <p className="text-muted-foreground tracking-[0.2em] uppercase text-xs mb-8">Your bag is currently empty.</p>
                   <Link href="/shop">
@@ -126,10 +126,10 @@ const CartPage = () => {
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: idx * 0.1 }}
-                      className="flex flex-col sm:flex-row gap-8 pb-12 border-b border-white/5 last:border-0"
+                      className="flex flex-col sm:flex-row gap-8 pb-12 border-b border-border last:border-0"
                     >
                       {/* Image */}
-                      <div className="w-full sm:w-40 aspect-[3/4] bg-[#111] overflow-hidden flex-shrink-0">
+                      <div className="w-full sm:w-40 aspect-[3/4] bg-card overflow-hidden flex-shrink-0">
                         <img 
                           src={item.product_variants ? item.product_variants.products.image_url : (item.image_url || '')} 
                           alt="Product" 
@@ -155,7 +155,7 @@ const CartPage = () => {
 
                         <div className="mt-auto flex items-center justify-between">
                            {/* Quantity Controls */}
-                           <div className="flex items-center gap-6 border border-white/10 px-4 py-2">
+                           <div className="flex items-center gap-6 border border-border px-4 py-2">
                               <button onClick={() => handleUpdateQuantity(item.variant_id, item.quantity - 1)} className="text-muted-foreground hover:text-primary transition-colors">
                                 <Minus size={14} />
                               </button>
@@ -182,10 +182,10 @@ const CartPage = () => {
 
           {/* Sidebar Summary */}
           <div className="lg:col-span-4">
-             <div className="bg-[#111] p-10 space-y-10 relative overflow-hidden sticky top-24">
+             <div className="bg-card p-10 space-y-10 relative overflow-hidden sticky top-24">
                 <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 blur-3xl rounded-full" />
                 
-                <h2 className="text-2xl font-display uppercase tracking-tighter border-b border-white/5 pb-6">Summary</h2>
+                <h2 className="text-2xl font-display uppercase tracking-tighter border-b border-border pb-6">Summary</h2>
                 
                 <div className="space-y-6">
                    <div className="flex justify-between items-center text-[10px] tracking-[0.2em] uppercase text-muted-foreground">
@@ -196,7 +196,7 @@ const CartPage = () => {
                       <span>Shipping</span>
                       <span className="text-primary font-bold">Free</span>
                    </div>
-                   <div className="pt-6 border-t border-white/5 flex justify-between items-end">
+                   <div className="pt-6 border-t border-border flex justify-between items-end">
                       <span className="text-xs tracking-[0.2em] uppercase font-bold">Total</span>
                       <span className="text-3xl font-sans font-bold text-primary">₹{total.toFixed(2)}</span>
                    </div>

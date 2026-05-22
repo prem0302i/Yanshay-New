@@ -55,10 +55,10 @@ const FeaturedProducts = () => {
         >
           <Link href={`/shop/${product.id}`} className="block">
             {/* Image Container */}
-            <div className="relative aspect-[4/5] overflow-hidden bg-[#111] mb-6">
+            <div className="relative aspect-[4/5] overflow-hidden bg-card mb-6">
               {product.image_url ? (
                 <img 
-                  src={product.image_url} 
+                  src={product.image_url.split(',')[0]} 
                   alt={product.name} 
                   className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110 grayscale-[0.2] group-hover:grayscale-0"
                 />
@@ -70,7 +70,7 @@ const FeaturedProducts = () => {
               
               {/* Overlay on Hover */}
               <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                <span className="text-[10px] tracking-[0.3em] font-sans font-bold uppercase text-white border border-white/30 px-6 py-3 backdrop-blur-sm">
+                <span className="text-[10px] tracking-[0.3em] font-sans font-bold uppercase text-white border border-border px-6 py-3 backdrop-blur-sm">
                   View Detail
                 </span>
               </div>

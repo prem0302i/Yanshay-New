@@ -1,16 +1,16 @@
 import './globals.css';
 import type { Metadata } from 'next';
-import { Epilogue, Manrope } from 'next/font/google';
+import { Playfair_Display, DM_Sans } from 'next/font/google';
 
-const epilogue = Epilogue({ 
+const playfair = Playfair_Display({ 
   subsets: ['latin'],
-  variable: '--font-epilogue',
+  variable: '--font-playfair',
   display: 'swap',
 });
 
-const manrope = Manrope({ 
+const dmSans = DM_Sans({ 
   subsets: ['latin'],
-  variable: '--font-manrope',
+  variable: '--font-dmsans',
   display: 'swap',
 });
 
@@ -39,7 +39,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head></head>
-      <body className={`${manrope.variable} ${epilogue.variable} font-sans bg-background text-foreground`}>
+      <body className={`${dmSans.variable} ${playfair.variable} font-sans bg-background text-foreground`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

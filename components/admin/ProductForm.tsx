@@ -12,15 +12,15 @@ export const ProductForm = React.forwardRef<HTMLDivElement, { product?: any, onS
     const [formData, setFormData] = React.useState<any>({
     name: '',
     description: '',
+    gender: 'Unisex',
     video_url: '',
     price: 0,
     stock: 0,
     rating: 0,
     review_count: 0,
   });
-  const [imageFiles, setImageFiles] = React.useState<File[]>([]);
+  const [mediaList, setMediaList] = React.useState<any[]>([]);
   const [videoFile, setVideoFile] = React.useState<File | null>(null);
-  const [imagePreviews, setImagePreviews] = React.useState<string[]>([]);
   const [categories, setCategories] = React.useState<any[]>([]);
   const [selectedCategories, setSelectedCategories] = React.useState<number[]>([]);
   const [sizes, setSizes] = React.useState<string[]>(['']);
@@ -33,6 +33,7 @@ export const ProductForm = React.forwardRef<HTMLDivElement, { product?: any, onS
       const initialData = {
         name: product.name || '',
         description: product.description || '',
+        gender: product.gender || 'Unisex',
         video_url: product.video_url || '',
         price: product.price || 0,
         stock: product.stock || 0,
@@ -40,6 +41,16 @@ export const ProductForm = React.forwardRef<HTMLDivElement, { product?: any, onS
         review_count: product.review_count || 0,
       };
       setFormData(initialData);
+
+      if (product.variants?.length > 0) setSizes(product.variants.map((v: any) => v.size));
+      if (product.colors?.length > 0) setColors(product.colors.map((c: any) => ({ name: c.color_name, hex: c.color_hex })));
+      if (product.features?.length > 0) setFeatures(product.features.map((f: any) => ({ title: f.title, description: f.description })));
+      if (product.box_items?.length > 0) setBoxItems(product.box_items.map((b: any) => b.item_name));
+      if (product.categories?.length > 0) setSelectedCategories(product.categories.map((c: any) => c.category_id));
+      
+      if (product.image_url) {
+        setMediaList(product.image_url.split(','));
+      }
     }
 
     const fetchCategories = async () => {
@@ -55,14 +66,45 @@ export const ProductForm = React.forwardRef<HTMLDivElement, { product?: any, onS
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files ? Array.from(e.target.files) : [];
-    setImageFiles(files);
+    setMediaList(prev => [...prev, ...files]);
+  };
 
-    const previews = files.map(file => URL.createObjectURL(file));
-    setImagePreviews(previews);
+  const moveMedia = (index: number, direction: number) => {
+    const newList = [...mediaList];
+    const targetIndex = index + direction;
+    if (targetIndex >= 0 && targetIndex < newList.length) {
+      [newList[index], newList[targetIndex]] = [newList[targetIndex], newList[index]];
+      setMediaList(newList);
+    }
+  };
+
+  const removeMedia = (index: number) => {
+    const newList = [...mediaList];
+    newList.splice(index, 1);
+    setMediaList(newList);
   };
 
     const handleSubmit = () => {
-    onSave({ ...product, ...formData, imageFiles, videoFile, categories: selectedCategories, sizes, colors, features, boxItems });
+    const variants = sizes.map(size => ({
+      size,
+      price: formData.price,
+      stock_quantity: formData.stock
+    }));
+    const imageFile = mediaList.length > 0 && typeof mediaList[0] !== 'string' ? mediaList[0] : null;
+
+    onSave({ 
+      ...product, 
+      ...formData, 
+      imageFile,
+      imageFiles: mediaList, 
+      videoFile, 
+      categories: selectedCategories, 
+      sizes, 
+      colors, 
+      features, 
+      boxItems,
+      variants
+    });
   };
 
   return (
@@ -77,7 +119,7 @@ export const ProductForm = React.forwardRef<HTMLDivElement, { product?: any, onS
             </div>
             <div className="space-y-2">
               <Label htmlFor="category">Category</Label>
-              <Select onValueChange={(value) => setSelectedCategories(value ? [Number(value)] : [])}>
+              <Select value={selectedCategories.length > 0 ? String(selectedCategories[0]) : undefined} onValueChange={(value) => setSelectedCategories(value ? [Number(value)] : [])}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select a category" />
                 </SelectTrigger>
@@ -85,6 +127,19 @@ export const ProductForm = React.forwardRef<HTMLDivElement, { product?: any, onS
                   {categories.map(category => (
                     <SelectItem key={category.id} value={String(category.id)}>{category.name}</SelectItem>
                   ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="gender">Gender</Label>
+              <Select value={formData.gender} onValueChange={(value) => handleInputChange('gender', value)}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select Gender" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Unisex">Unisex</SelectItem>
+                  <SelectItem value="Male">Male</SelectItem>
+                  <SelectItem value="Female">Female</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -108,7 +163,7 @@ export const ProductForm = React.forwardRef<HTMLDivElement, { product?: any, onS
             </div>
             <div className="space-y-2">
               <Label htmlFor="rating">Rating</Label>
-              <Input id="rating" type="number" value={formData.rating} onChange={(e) => handleInputChange('rating', e.target.value === '' ? 0 : parseFloat(e.target.value))} />
+              <Input id="rating" type="number" min={1} max={5} step={0.1} value={formData.rating} onChange={(e) => handleInputChange('rating', e.target.value === '' ? 0 : parseFloat(e.target.value))} />
             </div>
             <div className="space-y-2">
               <Label htmlFor="review_count">Reviews</Label>
@@ -122,27 +177,69 @@ export const ProductForm = React.forwardRef<HTMLDivElement, { product?: any, onS
           <div className="space-y-2">
             <Label htmlFor="images">Images</Label>
             <Input id="images" type="file" multiple onChange={handleImageChange} />
-            <div className="flex gap-4 mt-4">
-              {imagePreviews.map((preview, index) => (
-                <img key={index} src={preview} alt={`preview ${index}`} className="w-24 h-24 object-cover rounded-md" />
-              ))}
+            <div className="flex flex-wrap gap-4 mt-4">
+              {mediaList.map((item, index) => {
+                const preview = typeof item === 'string' ? item : URL.createObjectURL(item);
+                return (
+                  <div key={index} className="flex flex-col items-center gap-2 border p-2 rounded-md bg-card">
+                    <img src={preview} alt={`preview ${index}`} className="w-24 h-24 object-cover rounded-md" />
+                    <div className="flex gap-1 w-full justify-between">
+                      <Button type="button" size="icon" className="w-6 h-6" variant="outline" onClick={() => moveMedia(index, -1)} disabled={index === 0}>&lt;</Button>
+                      <Button type="button" size="icon" className="w-6 h-6" variant="destructive" onClick={() => removeMedia(index)}>X</Button>
+                      <Button type="button" size="icon" className="w-6 h-6" variant="outline" onClick={() => moveMedia(index, 1)} disabled={index === mediaList.length - 1}>&gt;</Button>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
           <div className="space-y-2 mt-4">
             <Label htmlFor="video">Video (optional)</Label>
             <Input id="video" type="file" onChange={(e) => setVideoFile(e.target.files ? e.target.files[0] : null)} />
+            {formData.video_url && !videoFile && (
+              <div className="mt-4">
+                <p className="text-sm text-muted-foreground mb-2">Current Video:</p>
+                <video src={formData.video_url} controls className="w-48 rounded-md" />
+              </div>
+            )}
+            {videoFile && (
+              <div className="mt-4">
+                <p className="text-sm text-muted-foreground mb-2">New Video Selected:</p>
+                <video src={URL.createObjectURL(videoFile)} controls className="w-48 rounded-md" />
+              </div>
+            )}
           </div>
         </div>
       </div>
                     <div className="p-6 border rounded-lg">
           <h3 className="text-lg font-semibold mb-4">Sizes</h3>
+          <div className="flex flex-wrap gap-2 mb-4">
+            {['XS', 'S', 'M', 'L', 'XL', 'XXL'].map(preset => (
+               <Button 
+                 key={preset}
+                 type="button"
+                 size="sm"
+                 variant={sizes.includes(preset) ? 'default' : 'outline'}
+                 onClick={() => {
+                   if (!sizes.includes(preset)) {
+                     setSizes(prev => {
+                       const newSizes = prev.filter(s => s !== '');
+                       return [...newSizes, preset];
+                     });
+                   }
+                 }}
+               >
+                 {preset}
+               </Button>
+            ))}
+          </div>
           {sizes.map((size, index) => (
             <div key={index} className="flex items-center gap-2 mb-2">
               <Input value={size} onChange={(e) => {
                 const newSizes = [...sizes];
-                newSizes[index] = e.target.value;
+                newSizes[index] = e.target.value.toUpperCase();
                 setSizes(newSizes);
-              }} placeholder="Size (e.g., M)" />
+              }} placeholder="Custom Size (e.g. 32)" />
               <Button variant="destructive" size="sm" onClick={() => setSizes(sizes.filter((_, i) => i !== index))}>Remove</Button>
             </div>
           ))}

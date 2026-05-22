@@ -8,13 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import {
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-} from '@/components/ui/dialog';
+
 
 const variantSchema = z.object({
   size: z.string().min(1, 'Size is required'),
@@ -27,6 +21,7 @@ const productSchema = z.object({
   name: z.string().min(1, 'Name is required'),
   description: z.string().min(1, 'Description is required'),
   imageFile: z.any().optional(),
+  gender: z.string().optional(),
   variants: z.array(variantSchema).min(1, 'At least one size variant is required'),
 });
 
@@ -52,6 +47,7 @@ export const ProductForm = React.forwardRef<HTMLDivElement, ProductFormProps>(
         id: product?.id || undefined,
         name: product?.name || '',
         description: product?.description || '',
+        gender: product?.gender || 'Unisex',
         variants: product?.variants || [{ size: '', price: 0, stock_quantity: 0 }],
       },
     });
@@ -67,6 +63,7 @@ export const ProductForm = React.forwardRef<HTMLDivElement, ProductFormProps>(
           id: product.id,
           name: product.name,
           description: product.description,
+          gender: product.gender || 'Unisex',
           variants: product.variants.length > 0 ? product.variants : [{ size: '', price: 0, stock_quantity: 0 }],
         });
       } else {
@@ -74,6 +71,7 @@ export const ProductForm = React.forwardRef<HTMLDivElement, ProductFormProps>(
           id: undefined,
           name: '',
           description: '',
+          gender: 'Unisex',
           variants: [{ size: '', price: 0, stock_quantity: 0 }],
         });
       }
@@ -100,14 +98,14 @@ export const ProductForm = React.forwardRef<HTMLDivElement, ProductFormProps>(
     };
 
     return (
-      <DialogContent ref={ref}>
-        <DialogHeader>
-          <DialogTitle>{product ? 'Edit Product' : 'Add Product'}</DialogTitle>
-          <DialogDescription>
+      <div ref={ref} className="bg-card border border-border p-8 rounded-lg max-w-4xl">
+        <div className="mb-6">
+          <h2 className="text-xl font-display uppercase tracking-tight">{product ? 'Edit Product' : 'Add Product'}</h2>
+          <p className="text-muted-foreground text-sm mt-1">
             Fill in the details below to {product ? 'update the' : 'create a new'} product.
-          </DialogDescription>
-        </DialogHeader>
-        <form onSubmit={handleSubmit(onSubmit, onInvalid)} className="space-y-4">
+          </p>
+        </div>
+        <form onSubmit={handleSubmit(onSubmit, onInvalid)} className="space-y-6">
           <div>
             <Label htmlFor="name">Name</Label>
             <Input id="name" {...register('name')} />
@@ -117,6 +115,18 @@ export const ProductForm = React.forwardRef<HTMLDivElement, ProductFormProps>(
             <Label htmlFor="description">Description</Label>
             <Textarea id="description" {...register('description')} />
             {errors.description && <p className="text-red-500 text-sm">{errors.description.message}</p>}
+          </div>
+          <div>
+            <Label htmlFor="gender">Gender</Label>
+            <select 
+              id="gender" 
+              {...register('gender')} 
+              className="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              <option value="Unisex">Unisex</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+            </select>
           </div>
           <div>
             <Label htmlFor="imageFile">Image</Label>
@@ -146,13 +156,13 @@ export const ProductForm = React.forwardRef<HTMLDivElement, ProductFormProps>(
             <Button type="button" onClick={() => append({ size: '', price: 0, stock_quantity: 0 })}>Add Size</Button>
             {errors.variants && <p className="text-red-500 text-sm">{errors.variants.message || (errors.variants as any).root?.message}</p>}
           </div>
-          <DialogFooter>
+          <div className="mt-8 pt-6 border-t border-border flex justify-end">
             <Button type="submit" disabled={isSaving}>
-              {isSaving ? 'Saving...' : 'Save'}
+              {isSaving ? 'Saving...' : 'Save Product'}
             </Button>
-          </DialogFooter>
+          </div>
         </form>
-      </DialogContent>
+      </div>
     );
   }
 );

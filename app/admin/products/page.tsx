@@ -65,7 +65,7 @@ const AdminProductsPage = () => {
           <TableBody>
             {products.map((product) => (
               <TableRow key={product.id}>
-                <TableCell>{product.image_url && <img src={product.image_url} alt={product.name} className="w-16 h-16 object-cover" />}</TableCell>
+                <TableCell>{product.image_url && <img src={product.image_url.split(',')[0]} alt={product.name} className="w-16 h-16 object-cover" />}</TableCell>
                 <TableCell>{product.name}</TableCell>
                 <TableCell className="text-right">
                   <Button variant="outline" size="sm" onClick={() => router.push(`/admin/products/edit/${product.id}`)} className="mr-2">Edit</Button>
@@ -80,7 +80,7 @@ const AdminProductsPage = () => {
           {products.map((product) => (
             <div key={product.id} className="border rounded-lg p-4 flex flex-col justify-between">
               <div className="flex items-center gap-4 mb-4">
-                {product.image_url && <img src={product.image_url} alt={product.name} className="w-16 h-16 object-cover rounded-md" />}
+                {product.image_url && <img src={product.image_url.split(',')[0]} alt={product.name} className="w-16 h-16 object-cover rounded-md" />}
                 <h3 className="font-bold flex-1">{product.name}</h3>
               </div>
               <div className="flex justify-end gap-2">

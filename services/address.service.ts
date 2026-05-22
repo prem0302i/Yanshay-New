@@ -3,7 +3,7 @@ import { supabase } from '@/lib/supabase';
 export const getUserAddress = async (userId: string) => {
   const { data, error } = await supabase
     .from('users')
-    .select('street_address, landmark, city, state, postal_code, country, full_name')
+    .select('id, street_address, landmark, city, state, postal_code, country, full_name')
     .eq('id', userId)
     .single();
 

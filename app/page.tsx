@@ -5,8 +5,20 @@ import FeaturedProducts from '@/components/layout/FeaturedProducts';
 import Link from 'next/link';
 import { ArrowRight, Palette, Shirt, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useAuth } from '@/context/AuthContext';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 const HomePage = () => {
+  const { user } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (user?.role === 'admin') {
+      router.push('/admin');
+    }
+  }, [user, router]);
+
   return (
     <div className="bg-background min-h-screen">
       <Hero />
@@ -55,7 +67,7 @@ const HomePage = () => {
         </section>
 
         {/* Customizer Teaser Section */}
-        <section className="relative overflow-hidden bg-[#111] p-12 md:px-24 md:py-32 flex flex-col md:flex-row items-center gap-16">
+        <section className="relative overflow-hidden bg-card p-12 md:px-24 md:py-32 flex flex-col md:flex-row items-center gap-16">
           <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-primary/5 to-transparent pointer-events-none" />
           
           <div className="flex-1 space-y-8 relative z-10">
@@ -77,7 +89,7 @@ const HomePage = () => {
           </div>
 
           <div className="flex-1 relative group md:translate-x-12">
-             <div className="aspect-square bg-white/5 border border-white/5 relative overflow-hidden p-8 flex items-center justify-center transition-all duration-700 group-hover:scale-[1.02]">
+             <div className="aspect-square bg-card border border-border relative overflow-hidden p-8 flex items-center justify-center transition-all duration-700 group-hover:scale-[1.02]">
                 <img 
                   src="https://images.unsplash.com/photo-1576566588028-4147f3842f27?auto=format&fit=crop&q=80" 
                   alt="Customizer" 
@@ -96,7 +108,7 @@ const HomePage = () => {
 };
 
 const CategoryCard = ({ title, description, image, href, accent = false }: { title: string; description: string; image: string; href: string; accent?: boolean }) => (
-  <Link href={href} className="group relative block aspect-[4/5] overflow-hidden bg-card border border-white/5">
+  <Link href={href} className="group relative block aspect-[4/5] overflow-hidden bg-card border border-border">
     <img 
       src={image} 
       alt={title} 

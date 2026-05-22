@@ -38,7 +38,7 @@ const SearchContent = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
           {products.map((product) => (
             <Link href={`/product/${product.id}`} key={product.id} className="border rounded-lg p-4 text-center">
-              <img src={product.image_url} alt={product.name} className="bg-muted h-48 mb-4 w-full object-cover" />
+              <img src={product.image_url.split(',')[0]} alt={product.name} className="bg-muted h-48 mb-4 w-full object-cover" />
               <h3 className="font-bold">{product.name}</h3>
               <p className="text-muted-foreground">₹{product.variants[0]?.price}</p>
             </Link>

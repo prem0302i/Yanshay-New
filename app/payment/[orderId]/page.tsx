@@ -12,6 +12,7 @@ import { toast } from 'sonner';
 import Script from 'next/script';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
+import { formatOrderId } from '@/app/admin/orders/page';
 
 const PaymentPage = ({ params }: { params: { orderId: string } }) => {
   const { user } = useAuth();
@@ -19,6 +20,9 @@ const PaymentPage = ({ params }: { params: { orderId: string } }) => {
   const [isLoading, setIsLoading] = React.useState(true);
   const [error, setError] = React.useState<string | null>(null);
   const [voucherCode, setVoucherCode] = React.useState('');
+  const [cardNumber, setCardNumber] = React.useState('');
+  const [cardPin, setCardPin] = React.useState('');
+  const [isPaid, setIsPaid] = React.useState(false);
 
   const fetchOrder = async () => {
     try {
@@ -65,9 +69,83 @@ const PaymentPage = ({ params }: { params: { orderId: string } }) => {
     }
   };
 
+  const handleCardPayment = async () => {
+    if (cardNumber === '170507' && cardPin === '121212') {
+      try {
+        await updateOrderStatus(order.id, 'paid');
+        setIsPaid(true);
+        toast.success('Payment successful!');
+      } catch (err: any) {
+        toast.error(err.message);
+      }
+    } else {
+      toast.error('Invalid card credentials for testing.');
+    }
+  };
+
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
   if (!order) return notFound();
+
+  if (isPaid) {
+    return (
+      <div className="container mx-auto py-16 text-center animate-in fade-in duration-700">
+        <h1 className="text-4xl font-display uppercase tracking-widest text-primary mb-2">Payment Successful</h1>
+        <p className="text-sm font-bold tracking-widest uppercase text-muted-foreground mb-12">Your order has been placed</p>
+        
+        <div className="max-w-xl mx-auto bg-card border border-border p-8 rounded-lg shadow-sm text-left mb-8">
+          <div className="flex justify-between items-center border-b border-border pb-6 mb-6">
+             <h2 className="text-xs tracking-widest font-bold uppercase text-muted-foreground">Receipt</h2>
+             <span className="font-mono text-primary font-bold">{formatOrderId(order.id)}</span>
+          </div>
+          
+          <div className="space-y-4 mb-6">
+            {order.order_items?.map((item: any) => (
+              <div key={item.id} className="flex justify-between items-center text-sm">
+                 <div className="flex gap-4 items-center">
+                    {item.product_variants?.products?.image_url && (
+                      <img src={item.product_variants.products.image_url.split(',')[0]} alt="img" className="w-12 h-12 rounded object-cover border border-border" />
+                    )}
+                    <div>
+                      <p className="font-bold uppercase tracking-widest text-[10px]">{item.product_variants?.products?.name}</p>
+                      <p className="text-[10px] text-muted-foreground uppercase tracking-widest">Qty: {item.quantity} | Size: {item.product_variants?.size}</p>
+                    </div>
+                 </div>
+                 <span className="font-mono font-bold text-sm">₹{item.price * item.quantity}</span>
+              </div>
+            ))}
+          </div>
+          
+          <div className="border-t border-border pt-4 space-y-2 text-xs uppercase tracking-widest">
+             <div className="flex justify-between text-muted-foreground">
+                <span>Subtotal</span>
+                <span>₹{order.total_amount}</span>
+             </div>
+             {order.discount_amount > 0 && (
+               <div className="flex justify-between text-green-500">
+                  <span>Discount</span>
+                  <span>- ₹{order.discount_amount}</span>
+               </div>
+             )}
+             <div className="flex justify-between font-bold text-sm pt-2">
+                <span>Total Paid</span>
+                <span className="text-primary font-mono">₹{order.final_amount || order.total_amount}</span>
+             </div>
+          </div>
+        </div>
+
+        <div className="bg-muted p-6 rounded-md text-sm font-mono flex flex-col gap-2 border border-border max-w-xl mx-auto text-center shadow-sm mb-8">
+          <span className="text-[10px] uppercase tracking-widest text-primary font-bold mb-1">Paid With Test Credentials</span>
+          <span>Card Number: <span className="font-bold">170507</span></span>
+          <span>Password: <span className="font-bold">121212</span></span>
+        </div>
+        
+        <Button onClick={() => window.location.href = '/account'} className="uppercase tracking-widest text-xs font-bold px-8 h-12">
+           View My Orders
+        </Button>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -123,8 +201,15 @@ const PaymentPage = ({ params }: { params: { orderId: string } }) => {
                     <CardTitle>Credit/Debit Card</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    <p>You will be redirected to our secure payment gateway to complete your purchase.</p>
-                    <Button size="lg" className="w-full" onClick={handlePayment}>Pay with Card</Button>
+                    <div className="space-y-4 mb-4 mt-2">
+                      <div className="space-y-2">
+                        <Input placeholder="Card Number" value={cardNumber} onChange={e => setCardNumber(e.target.value)} autoComplete="off" />
+                      </div>
+                      <div className="space-y-2">
+                        <Input type="password" placeholder="PIN / Password" value={cardPin} onChange={e => setCardPin(e.target.value)} autoComplete="new-password" />
+                      </div>
+                    </div>
+                    <Button size="lg" className="w-full" onClick={handleCardPayment}>Complete Order</Button>
                   </CardContent>
                 </Card>
               </TabsContent>

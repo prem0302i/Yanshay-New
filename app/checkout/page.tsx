@@ -122,7 +122,7 @@ const CheckoutPage = () => {
           <Link href="/cart" className="flex items-center gap-2 text-[10px] tracking-widest uppercase text-muted-foreground hover:text-primary transition-colors mb-8">
             <ArrowLeft size={14} /> Back to Bag
           </Link>
-          <div className="border-b border-white/5 pb-12">
+          <div className="border-b border-border pb-12">
             <span className="text-primary text-[10px] tracking-[0.4em] font-sans font-bold uppercase mb-4 block">Secure Checkout</span>
             <h1 className="text-5xl md:text-6xl font-display font-medium leading-none tracking-tighter uppercase">
                Checkout <br /> <span className="text-primary italic">Order</span>
@@ -143,7 +143,7 @@ const CheckoutPage = () => {
                </div>
 
                {hasAddress && !isEditing ? (
-                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-[#111] p-8 space-y-4 border-l-2 border-primary">
+                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-card p-8 space-y-4 border-l-2 border-primary">
                     <p className="text-sm font-sans font-bold uppercase tracking-widest">{userProfile?.full_name}</p>
                     <p className="text-sm text-muted-foreground leading-relaxed">
                       {userProfile?.street_address}<br />
@@ -156,33 +156,33 @@ const CheckoutPage = () => {
                     </button>
                  </motion.div>
                ) : (
-                 <div className="space-y-8 bg-[#111] p-8">
+                 <div className="space-y-8 bg-card p-8">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                        <div className="space-y-3">
                           <Label className="text-[10px] tracking-widest uppercase opacity-60">Street Address</Label>
-                          <Input className="h-12 border-0 border-b border-white/10 rounded-none bg-transparent focus-visible:ring-0 focus-visible:border-primary transition-colors"
+                          <Input className="h-12 border-0 border-b border-border rounded-none bg-transparent focus-visible:ring-0 focus-visible:border-primary transition-colors"
                             value={address.street_address} onChange={e => setAddress({...address, street_address: e.target.value})} />
                        </div>
                        <div className="space-y-3">
                           <Label className="text-[10px] tracking-widest uppercase opacity-60">Landmark</Label>
-                          <Input className="h-12 border-0 border-b border-white/10 rounded-none bg-transparent focus-visible:ring-0 focus-visible:border-primary transition-colors"
+                          <Input className="h-12 border-0 border-b border-border rounded-none bg-transparent focus-visible:ring-0 focus-visible:border-primary transition-colors"
                             value={address.landmark} onChange={e => setAddress({...address, landmark: e.target.value})} />
                        </div>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                        <div className="space-y-3">
                           <Label className="text-[10px] tracking-widest uppercase opacity-60">City</Label>
-                          <Input className="h-12 border-0 border-b border-white/10 rounded-none bg-transparent focus-visible:ring-0 focus-visible:border-primary transition-colors"
+                          <Input className="h-12 border-0 border-b border-border rounded-none bg-transparent focus-visible:ring-0 focus-visible:border-primary transition-colors"
                             value={address.city} onChange={e => setAddress({...address, city: e.target.value})} />
                        </div>
                        <div className="space-y-3">
                           <Label className="text-[10px] tracking-widest uppercase opacity-60">State</Label>
-                          <Input className="h-12 border-0 border-b border-white/10 rounded-none bg-transparent focus-visible:ring-0 focus-visible:border-primary transition-colors"
+                          <Input className="h-12 border-0 border-b border-border rounded-none bg-transparent focus-visible:ring-0 focus-visible:border-primary transition-colors"
                             value={address.state} onChange={e => setAddress({...address, state: e.target.value})} />
                        </div>
                        <div className="space-y-3">
                           <Label className="text-[10px] tracking-widest uppercase opacity-60">Postal Code</Label>
-                          <Input className="h-12 border-0 border-b border-white/10 rounded-none bg-transparent focus-visible:ring-0 focus-visible:border-primary transition-colors"
+                          <Input className="h-12 border-0 border-b border-border rounded-none bg-transparent focus-visible:ring-0 focus-visible:border-primary transition-colors"
                             value={address.postal_code} onChange={e => setAddress({...address, postal_code: e.target.value})} />
                        </div>
                     </div>
@@ -197,7 +197,7 @@ const CheckoutPage = () => {
             {/* Step 2: Payment (Preview) */}
             <section className={!hasAddress || isEditing ? 'opacity-30 pointer-events-none' : ''}>
                <div className="flex items-center gap-4 mb-10">
-                  <div className="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center text-[10px] font-bold">02</div>
+                  <div className="w-8 h-8 rounded-full border border-border flex items-center justify-center text-[10px] font-bold">02</div>
                   <h2 className="text-2xl font-display uppercase tracking-tighter">Secure Payment</h2>
                </div>
                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -208,7 +208,7 @@ const CheckoutPage = () => {
                      </div>
                      <div className="w-3 h-3 rounded-full bg-primary" />
                   </div>
-                  <div className="p-6 border border-white/5 opacity-50 flex items-center gap-4">
+                  <div className="p-6 border border-border opacity-50 flex items-center gap-4">
                      <CreditCard />
                      <span className="text-[11px] tracking-widest uppercase font-bold">Online Payment (Coming Soon)</span>
                   </div>
@@ -219,14 +219,14 @@ const CheckoutPage = () => {
 
           {/* Right: Summary Sidebar */}
           <div className="lg:col-span-5">
-             <div className="bg-[#111] p-10 space-y-10 sticky top-24">
-                <h2 className="text-2xl font-display uppercase tracking-tighter border-b border-white/5 pb-6">Order Summary</h2>
+             <div className="bg-card p-10 space-y-10 sticky top-24">
+                <h2 className="text-2xl font-display uppercase tracking-tighter border-b border-border pb-6">Order Summary</h2>
                 
                 <div className="max-h-[300px] overflow-y-auto pr-4 space-y-6 scrollbar-hide">
                    {cartItems.map(item => (
                       <div key={item.id} className="flex gap-4 group">
                          <div className="w-16 h-20 bg-background flex-shrink-0 overflow-hidden">
-                            <img src={item.product_variants?.products.image_url} alt="" className="w-full h-full object-cover grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100 transition-all" />
+                            <img src={item.product_variants?.products.image_url || undefined} alt="" className="w-full h-full object-cover grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100 transition-all" />
                          </div>
                          <div className="flex-1 space-y-1">
                             <p className="text-[10px] tracking-widest font-bold uppercase truncate max-w-[150px]">{item.product_variants?.products.name}</p>
@@ -237,7 +237,7 @@ const CheckoutPage = () => {
                    ))}
                 </div>
 
-                <div className="space-y-6 pt-6 border-t border-white/5">
+                <div className="space-y-6 pt-6 border-t border-border">
                    <div className="flex justify-between items-center text-[10px] tracking-[0.2em] uppercase text-muted-foreground">
                       <span>Subtotal</span>
                       <span className="text-foreground">₹{subtotal.toFixed(2)}</span>

@@ -26,6 +26,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const userRef = React.useRef(user);
+
+  useEffect(() => {
+    userRef.current = user;
+  }, [user]);
 
   const refreshUser = async () => {
     try {
@@ -49,85 +54,52 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   routerRef.current = router;
 
   useEffect(() => {
-    const fetchSessionAndProfile = async () => {
+    const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
       try {
-        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-        if (sessionError) throw sessionError;
+        const isNewLogin = (event === 'SIGNED_IN' || event === 'INITIAL_SESSION') && session?.user?.id !== userRef.current?.id;
+        
+        if (isNewLogin) {
+          setLoading(true);
+        }
+        
         setSession(session);
+        
+        if ((event === 'SIGNED_IN' || event === 'INITIAL_SESSION') && session?.user) {
+          if (isNewLogin) {
+            // Optimistically set user to unblock the UI immediately
+            setUser(session.user as any);
+          }
 
-        if (session?.user) {
-          const { data: userProfile, error: profileError } = await supabase
+          // Fetch profile asynchronously in the background
+          supabase
             .from('users')
             .select('*')
             .eq('id', session.user.id)
-            .single();
-          if (profileError) throw profileError;
-          setUser({ ...session.user, ...userProfile });
-        } else {
+            .single()
+            .then(({ data: userProfile, error: profileError }) => {
+              if (userProfile) {
+                const fullUser = { ...session.user, ...userProfile };
+                setUser(fullUser);
+                
+                if (event === 'SIGNED_IN') {
+                  const currentPath = window.location.pathname;
+                  if (currentPath === '/login' || currentPath === '/signup') {
+                    const targetUrl = fullUser.role === 'admin' ? '/admin' : '/';
+                    routerRef.current.push(targetUrl);
+                  }
+                }
+              } else if (profileError) {
+                console.error('Error fetching profile (DB trigger may have failed):', profileError);
+              }
+            });
+        } else if (event === 'SIGNED_OUT' || (!session?.user && event === 'INITIAL_SESSION')) {
           setUser(null);
         }
-      } catch (error) {
-        console.error('Error fetching initial session:', error);
-        setUser(null);
+      } catch (err) {
+        console.error('Error in auth state change:', err);
       } finally {
         setLoading(false);
       }
-    };
-
-    fetchSessionAndProfile();
-
-    const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION') {
-        setLoading(true);
-      }
-      
-      setSession(session);
-      if (event === 'SIGNED_IN' && session?.user) {
-        const { data: userProfile, error: profileError } = await supabase
-          .from('users')
-          .select('*')
-          .eq('id', session.user.id)
-          .single();
-
-        if (userProfile) {
-          const fullUser = { ...session.user, ...userProfile };
-          setUser(fullUser);
-          
-          // Only redirect if on auth pages to avoid interrupting active sessions on deep links
-          const currentPath = window.location.pathname;
-          if (currentPath === '/login' || currentPath === '/signup') {
-            const targetUrl = fullUser.role === 'admin' ? '/admin' : '/';
-            routerRef.current.push(targetUrl);
-          }
-        } else if (profileError) {
-          // Profile doesn't exist, create it
-          const { data: newProfile, error: createError } = await supabase
-            .from('users')
-            .insert({ 
-              id: session.user.id, 
-              full_name: session.user.user_metadata.full_name,
-              role: 'user'
-            })
-            .select()
-            .single();
-
-          if (newProfile) {
-            const fullUser = { ...session.user, ...newProfile };
-            setUser(fullUser);
-            
-            const currentPath = window.location.pathname;
-            if (currentPath === '/login' || currentPath === '/signup') {
-              routerRef.current.push('/'); 
-            }
-          } else {
-            console.error('Error creating profile:', createError);
-            await supabase.auth.signOut();
-          }
-        }
-      } else if (event === 'SIGNED_OUT') {
-        setUser(null);
-      }
-      setLoading(false);
     });
 
     return () => {

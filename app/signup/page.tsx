@@ -77,7 +77,7 @@ const SignupPage = () => {
 
   return (
     <div className="bg-background min-h-[90vh] w-full flex flex-col items-center justify-center pt-32 pb-24 px-6">
-      <div className="w-full max-w-lg">
+      <div className="w-full max-w-md">
         
         <header className="mb-16 text-center">
            <span className="text-primary text-[10px] tracking-[0.4em] font-sans font-bold uppercase mb-4 block">Join Us</span>
@@ -101,7 +101,7 @@ const SignupPage = () => {
                 value={fullName} 
                 onChange={(e) => setFullName(e.target.value)} 
                 required 
-                className="h-12 border-0 border-b border-white/10 rounded-none bg-transparent focus-visible:ring-0 focus-visible:border-primary transition-colors text-lg font-sans"
+                className="h-12 border-0 border-b border-border rounded-none bg-transparent focus-visible:ring-0 focus-visible:border-primary transition-colors text-lg font-sans px-0"
                 placeholder="E.g. Alexander McQueen"
               />
             </div>
@@ -114,7 +114,7 @@ const SignupPage = () => {
                 onChange={(e) => setEmail(e.target.value)} 
                 required 
                 autoComplete="off"
-                className="h-12 border-0 border-b border-white/10 rounded-none bg-transparent focus-visible:ring-0 focus-visible:border-primary transition-colors text-lg font-sans"
+                className="h-12 border-0 border-b border-border rounded-none bg-transparent focus-visible:ring-0 focus-visible:border-primary transition-colors text-lg font-sans px-0"
                 placeholder="name@studio.com"
               />
             </div>
@@ -127,7 +127,7 @@ const SignupPage = () => {
                 onChange={(e) => setPassword(e.target.value)} 
                 required 
                 autoComplete="new-password"
-                className="h-12 border-0 border-b border-white/10 rounded-none bg-transparent focus-visible:ring-0 focus-visible:border-primary transition-colors text-lg font-sans"
+                className="h-12 border-0 border-b border-border rounded-none bg-transparent focus-visible:ring-0 focus-visible:border-primary transition-colors text-lg font-sans px-0"
                 placeholder="••••••••"
               />
             </div>
@@ -156,7 +156,7 @@ const SignupPage = () => {
             <p className="text-muted-foreground text-[10px] tracking-[0.3em] uppercase font-bold">
                Already have an account? <Link href="/login" className="text-primary hover:underline transition-all">Log In</Link>
             </p>
-           <div className="w-12 h-[1px] bg-white/5 mx-auto" />
+           <div className="w-12 h-[1px] bg-card mx-auto" />
            <Link href="/" className="text-[9px] tracking-widest uppercase text-muted-foreground/30 hover:text-muted-foreground transition-all">
                Back to Home
            </Link>

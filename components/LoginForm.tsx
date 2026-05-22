@@ -43,16 +43,7 @@ const LoginForm = () => {
         toast.success('Welcome Back!', {
           description: 'You\'re now signed in.'
         });
-
-        // Small delay to allow the toast to be seen and session to propagate
-        const { data: profile } = await supabase
-          .from('users')
-          .select('role')
-          .eq('id', data.user?.id)
-          .single();
-
-        const targetUrl = profile?.role === 'admin' ? '/admin' : '/';
-        router.push(targetUrl);
+        // The redirection is now fully handled by AuthContext.tsx upon SIGNED_IN event.
       }
     } catch (err: any) {
       console.error('Login error:', err);
@@ -80,7 +71,7 @@ const LoginForm = () => {
               onChange={(e) => setEmail(e.target.value)} 
               required 
               autoComplete="email"
-              className="h-12 border-0 border-b border-white/10 rounded-none bg-transparent focus-visible:ring-0 focus-visible:border-primary transition-colors text-lg font-sans"
+              className="h-12 border-0 border-b border-border rounded-none bg-transparent focus-visible:ring-0 focus-visible:border-primary transition-colors text-lg font-sans px-0"
               placeholder="name@studio.com"
             />
           </div>
@@ -96,7 +87,7 @@ const LoginForm = () => {
               onChange={(e) => setPassword(e.target.value)} 
               required 
               autoComplete="current-password"
-              className="h-12 border-0 border-b border-white/10 rounded-none bg-transparent focus-visible:ring-0 focus-visible:border-primary transition-colors text-lg font-sans"
+              className="h-12 border-0 border-b border-border rounded-none bg-transparent focus-visible:ring-0 focus-visible:border-primary transition-colors text-lg font-sans px-0"
               placeholder="••••••••"
             />
           </div>

@@ -36,7 +36,7 @@ const ShopPage = () => {
         
         {/* Header Section */}
         <header className="mb-16">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-white/5 pb-12">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-border pb-12">
             <div className="max-w-xl">
               <span className="text-primary text-[10px] tracking-[0.4em] font-sans font-bold uppercase mb-4 block">The Collection</span>
               <h1 className="text-6xl md:text-7xl font-display font-medium leading-none tracking-tighter uppercase mb-6">
@@ -49,13 +49,13 @@ const ShopPage = () => {
             <div className="flex items-center gap-4">
                <button 
                  onClick={() => setIsFilterOpen(true)}
-                 className="flex items-center gap-3 px-6 py-3 border border-white/10 hover:border-primary/50 transition-colors uppercase text-[10px] tracking-widest font-bold"
+                 className="flex items-center gap-3 px-6 py-3 border border-border hover:border-primary/50 transition-colors uppercase text-[10px] tracking-widest font-bold"
                >
                  <SlidersHorizontal size={14} />
                  Filters
                </button>
                <div className="relative group hidden sm:block">
-                  <button className="flex items-center gap-3 px-6 py-3 border border-white/10 uppercase text-[10px] tracking-widest font-bold group-hover:border-primary transition-colors">
+                  <button className="flex items-center gap-3 px-6 py-3 border border-border uppercase text-[10px] tracking-widest font-bold group-hover:border-primary transition-colors">
                     Best Selling <ChevronDown size={14} />
                   </button>
                </div>
@@ -70,7 +70,7 @@ const ShopPage = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-1 gap-y-16 mt-8">
             {isLoading
               ? [...Array(8)].map((_, i) => (
-                  <div key={i} className="aspect-[4/5] bg-white/5 animate-pulse" />
+                  <div key={i} className="aspect-[4/5] bg-card animate-pulse" />
                 ))
               : products.map((product, index) => (
                   <motion.div 
@@ -85,7 +85,7 @@ const ShopPage = () => {
           </div>
 
           {!isLoading && products.length === 0 && (
-            <div className="text-center py-32 border border-dashed border-white/10">
+            <div className="text-center py-32 border border-dashed border-border">
                <p className="text-muted-foreground tracking-widest uppercase text-xs">No items found matching your criteria.</p>
                <Button variant="ghost" className="mt-4 text-primary" onClick={() => setFilters({ category: '', minPrice: 0, maxPrice: 10000 })}>
                  Reset Filters
@@ -113,7 +113,7 @@ const ShopPage = () => {
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
               className="fixed right-0 top-0 h-full w-full max-w-sm bg-card z-[101] p-10 flex flex-col gap-12"
             >
-              <div className="flex items-center justify-between border-b border-white/5 pb-8">
+              <div className="flex items-center justify-between border-b border-border pb-8">
                 <h2 className="text-2xl font-display uppercase tracking-widest">Refine</h2>
                 <button onClick={() => setIsFilterOpen(false)}><X size={24} /></button>
               </div>
@@ -161,10 +161,10 @@ const ShopPage = () => {
 
 const ProductItem = ({ product }: { product: any }) => (
   <Link href={`/shop/${product.id}`} className="group block">
-    <div className="relative aspect-[4/5] bg-[#111] overflow-hidden mb-6">
+    <div className="relative aspect-[4/5] bg-card overflow-hidden mb-6">
       {product.image_url ? (
         <img 
-          src={product.image_url} 
+          src={product.image_url.split(',')[0]} 
           alt={product.name} 
           className="w-full h-full object-cover grayscale transition-all duration-700 ease-out group-hover:scale-105 group-hover:grayscale-0" 
         />

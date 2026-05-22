@@ -7,10 +7,12 @@ export async function generateStaticParams() {
   return products?.map(({ id }) => ({ id: id.toString() })) || [];
 }
 
+export const revalidate = 0;
+
 async function getProduct(id: string) {
   const { data, error } = await supabase
     .from('products')
-    .select('*, variants:product_variants (*)')
+    .select('*, variants:product_variants (*), colors:product_colors (*), features:product_features (*), box_items:product_box_items (*), categories:product_categories (category_id, categories(name))')
     .eq('id', id)
     .single();
 
@@ -25,7 +27,7 @@ const ProductDetailPage = async ({ params }: { params: { id: string } }) => {
   const product = await getProduct(params.id);
 
   return (
-    <div className="container mx-auto py-16 pt-32">
+    <div className="container mx-auto py-12 pt-8">
       <ProductDetails product={product} />
     </div>
   );

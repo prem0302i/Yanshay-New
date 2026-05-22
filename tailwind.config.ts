@@ -10,8 +10,8 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['var(--font-manrope)', 'system-ui', 'sans-serif'],
-        display: ['var(--font-epilogue)', 'system-ui', 'sans-serif'],
+        sans: ['var(--font-dmsans)', 'system-ui', 'sans-serif'],
+        display: ['var(--font-playfair)', 'system-ui', 'sans-serif'],
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
@@ -24,6 +24,8 @@ const config: Config = {
         sm: 'calc(var(--radius) - 4px)',
       },
       colors: {
+        sand: '#F0EDE5',
+        cyprus: '#004643',
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
         card: {

@@ -83,7 +83,7 @@ const AccountPage = () => {
            <h1 className="text-5xl md:text-7xl font-display font-medium leading-[0.9] tracking-tighter uppercase mb-6">
              My <br /> <span className="text-primary italic">Account</span>
            </h1>
-           <div className="w-12 h-[1px] bg-white/10 mx-auto" />
+           <div className="w-12 h-[1px] bg-border mx-auto" />
         </header>
 
         <div className="grid grid-cols-1 md:grid-cols-12 gap-16 md:gap-24">
@@ -95,10 +95,10 @@ const AccountPage = () => {
                 <button
                   key={item.id}
                   onClick={() => setActiveSegment(item.id)}
-                  className={`flex items-center justify-between group py-4 px-2 border-l-2 transition-all duration-300 ${
+                  className={`flex items-center justify-between group py-4 px-3 border-l-2 transition-all duration-300 ${
                     activeSegment === item.id 
                       ? 'border-primary bg-primary/5 text-primary' 
-                      : 'border-white/5 text-muted-foreground hover:border-white/20'
+                      : 'border-transparent text-muted-foreground hover:border-primary/30 hover:bg-primary/5 hover:text-foreground'
                   }`}
                 >
                   <div className="flex items-center gap-4">
@@ -112,10 +112,10 @@ const AccountPage = () => {
               ))}
             </nav>
 
-            <div className="pt-8 border-t border-white/5">
+            <div className="pt-8 border-t border-border">
                <button 
                  onClick={signOut}
-                 className="flex items-center gap-4 text-[10px] tracking-[0.3em] font-bold uppercase text-red-400/60 hover:text-red-400 transition-colors"
+                 className="flex items-center gap-4 text-[10px] tracking-[0.3em] font-bold uppercase text-destructive/70 hover:text-destructive transition-colors"
                >
                  <LogOut size={16} /> Log Out
                </button>
@@ -139,7 +139,7 @@ const AccountPage = () => {
                       <p className="text-muted-foreground text-sm font-sans font-light tracking-widest uppercase opacity-60 mb-10">Your Personal Information</p>
                       
                       {user && (
-                        <div className="space-y-12 bg-[#111] p-10">
+                        <div className="space-y-12 bg-card p-10 border border-border/50 shadow-sm">
                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-10">
                               <div className="space-y-2">
                                  <p className="text-[9px] tracking-[0.4em] font-bold uppercase text-primary/60">Full Name</p>
@@ -151,7 +151,7 @@ const AccountPage = () => {
                               </div>
                            </div>
                            
-                           <div className="pt-8 border-t border-white/5 flex gap-6">
+                           <div className="pt-8 border-t border-border flex gap-6">
                               <Button 
                                 variant="outline" 
                                 className="h-12 px-8 text-[10px] font-bold tracking-widest uppercase border-primary/20 hover:bg-primary/5"
@@ -174,7 +174,7 @@ const AccountPage = () => {
                       <p className="text-muted-foreground text-sm font-sans font-light tracking-widest uppercase opacity-60 mb-10">Your Shipping Address</p>
                       
                       {hasAddress && !isEditingAddress ? (
-                        <div className="bg-[#111] p-10 border-l-2 border-primary space-y-6">
+                        <div className="bg-card p-10 border border-border/50 border-l-2 border-l-primary shadow-sm space-y-6">
                            <div className="space-y-2">
                               <p className="text-[9px] tracking-[0.4em] font-bold uppercase text-primary/60">Address</p>
                               <div className="text-lg font-sans font-light leading-relaxed">
@@ -186,44 +186,44 @@ const AccountPage = () => {
                            </div>
                            <Button 
                              variant="outline" 
-                             className="h-10 text-[9px] font-bold tracking-widest uppercase border-white/10 hover:border-primary transition-all px-6"
+                             className="h-10 text-[9px] font-bold tracking-widest uppercase border-border hover:border-primary transition-all px-6"
                              onClick={() => setIsEditingAddress(true)}
                            >
                              Edit Address
                            </Button>
                         </div>
                       ) : (
-                        <div className="bg-[#111] p-10 space-y-8">
+                        <div className="bg-card p-10 border border-border/50 shadow-sm space-y-8">
                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                               <div className="space-y-3">
-                                 <Label className="text-[9px] tracking-widest uppercase opacity-40">Street Address</Label>
-                                 <Input className="h-12 border-0 border-b border-white/10 rounded-none bg-transparent focus-visible:ring-0 focus-visible:border-primary transition-colors font-sans"
+                                 <Label className="text-[9px] tracking-widest uppercase opacity-70">Street Address</Label>
+                                 <Input className="h-12 border-0 border-b border-border rounded-none bg-transparent focus-visible:ring-0 focus-visible:border-primary transition-colors font-sans"
                                    value={address.street_address} onChange={e => setAddress({...address, street_address: e.target.value})} />
                               </div>
                               <div className="space-y-3">
-                                 <Label className="text-[9px] tracking-widest uppercase opacity-40">Landmark</Label>
-                                 <Input className="h-12 border-0 border-b border-white/10 rounded-none bg-transparent focus-visible:ring-0 focus-visible:border-primary transition-colors font-sans"
+                                 <Label className="text-[9px] tracking-widest uppercase opacity-70">Landmark</Label>
+                                 <Input className="h-12 border-0 border-b border-border rounded-none bg-transparent focus-visible:ring-0 focus-visible:border-primary transition-colors font-sans"
                                    value={address.landmark} onChange={e => setAddress({...address, landmark: e.target.value})} />
                               </div>
                            </div>
                            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                               <div className="space-y-3">
-                                 <Label className="text-[9px] tracking-widest uppercase opacity-40">City</Label>
-                                 <Input className="h-12 border-0 border-b border-white/10 rounded-none bg-transparent focus-visible:ring-0 focus-visible:border-primary transition-colors font-sans"
+                                 <Label className="text-[9px] tracking-widest uppercase opacity-70">City</Label>
+                                 <Input className="h-12 border-0 border-b border-border rounded-none bg-transparent focus-visible:ring-0 focus-visible:border-primary transition-colors font-sans"
                                    value={address.city} onChange={e => setAddress({...address, city: e.target.value})} />
                               </div>
                               <div className="space-y-3">
-                                 <Label className="text-[9px] tracking-widest uppercase opacity-40">State</Label>
-                                 <Input className="h-12 border-0 border-b border-white/10 rounded-none bg-transparent focus-visible:ring-0 focus-visible:border-primary transition-colors font-sans"
+                                 <Label className="text-[9px] tracking-widest uppercase opacity-70">State</Label>
+                                 <Input className="h-12 border-0 border-b border-border rounded-none bg-transparent focus-visible:ring-0 focus-visible:border-primary transition-colors font-sans"
                                    value={address.state} onChange={e => setAddress({...address, state: e.target.value})} />
                               </div>
                               <div className="space-y-3">
-                                 <Label className="text-[9px] tracking-widest uppercase opacity-40">Postal Code</Label>
-                                 <Input className="h-12 border-0 border-b border-white/10 rounded-none bg-transparent focus-visible:ring-0 focus-visible:border-primary transition-colors font-sans"
+                                 <Label className="text-[9px] tracking-widest uppercase opacity-70">Postal Code</Label>
+                                 <Input className="h-12 border-0 border-b border-border rounded-none bg-transparent focus-visible:ring-0 focus-visible:border-primary transition-colors font-sans"
                                    value={address.postal_code} onChange={e => setAddress({...address, postal_code: e.target.value})} />
                               </div>
                            </div>
-                           <div className="flex gap-4 pt-4 border-t border-white/5">
+                           <div className="flex gap-4 pt-4 border-t border-border">
                               <Button onClick={handleSaveAddress} className="h-12 px-8 text-[10px] font-bold tracking-widest uppercase">Save Address</Button>
                               {hasAddress && (
                                 <Button variant="ghost" onClick={() => setIsEditingAddress(false)} className="text-[10px] tracking-widest uppercase">Cancel</Button>
@@ -244,26 +244,26 @@ const AccountPage = () => {
                       
                       <div className="space-y-6">
                         {orders.length === 0 ? (
-                          <div className="py-24 text-center border border-dashed border-white/10 px-8">
+                          <div className="py-24 text-center border border-dashed border-border px-8">
                              <p className="text-muted-foreground tracking-widest uppercase text-[10px]">You haven't placed any orders yet.</p>
                              <Button variant="ghost" className="mt-6 text-primary uppercase text-[10px] tracking-widest font-bold" onClick={() => (window.location.href = '/shop')}>Start Shopping</Button>
                           </div>
                         ) : (
                           orders.map((order) => (
-                            <div key={order.id} className="bg-[#111] p-8 border border-white/5 hover:border-primary/20 transition-all flex flex-col md:flex-row md:items-center justify-between gap-8 group">
+                            <div key={order.id} className="bg-card p-8 border border-border/50 shadow-sm hover:shadow-md hover:border-primary/30 transition-all flex flex-col md:flex-row md:items-center justify-between gap-8 group">
                               <div className="space-y-1">
                                 <p className="text-[9px] tracking-[0.4em] font-bold uppercase text-primary/60">Order ID</p>
-                                <p className="text-lg font-sans font-medium tracking-tight">#{order.id.toString().slice(0, 12)}</p>
+                                <p className="text-lg font-sans font-medium tracking-tight">ORD-{order.id.toString().padStart(5, '0')}</p>
                                 <div className="pt-2 flex items-center gap-4 text-[10px] tracking-widest uppercase text-muted-foreground">
                                    <span>{new Date(order.created_at!).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
-                                   <span className="w-1 h-1 bg-white/20 rounded-full" />
+                                   <span className="w-1 h-1 bg-border rounded-full" />
                                    <span>₹{order.total_amount}</span>
                                 </div>
                               </div>
                               <div className={`px-4 py-2 text-[9px] font-bold tracking-widest uppercase text-center border ${
                                 order.status === 'paid' ? 'border-green-500/30 text-green-400 bg-green-500/5' :
                                 order.status === 'pending' ? 'border-yellow-500/30 text-yellow-400 bg-yellow-500/5' :
-                                'border-white/10 text-muted-foreground'
+                                'border-border text-muted-foreground'
                               }`}>
                                 {order.status}
                               </div>
@@ -278,7 +278,7 @@ const AccountPage = () => {
               {/* Saved Designs (Placeholder) */}
               {activeSegment === 'saved-designs' && (
                 <section className="space-y-12">
-                   <div className="py-32 text-center border border-dashed border-white/10 max-w-2xl">
+                   <div className="py-32 text-center border border-dashed border-border max-w-2xl">
                       <Palette className="mx-auto mb-6 text-primary/20" size={48} strokeWidth={1} />
                       <p className="text-muted-foreground tracking-[0.3em] uppercase text-xs mb-8">No Saved Designs Yet</p>
                       <Button onClick={() => (window.location.href = '/customize')} className="h-14 px-10 tracking-[0.3em] uppercase text-xs font-bold">

@@ -41,7 +41,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
           toast: 'group toast',
           description: 'text-[9px] opacity-40 mt-2 lowercase font-normal tracking-[0.1em] text-center w-full',
           actionButton: 'bg-primary text-black font-bold uppercase tracking-widest text-[9px] px-4 h-9 rounded-none mt-4',
-          cancelButton: 'bg-white/5 text-white/50 font-bold uppercase tracking-widest text-[9px] px-4 h-9 rounded-none mt-4',
+          cancelButton: 'bg-card text-white/50 font-bold uppercase tracking-widest text-[9px] px-4 h-9 rounded-none mt-4',
           success: 'text-primary',
           error: 'text-red-500',
           info: 'text-blue-500',
